@@ -13,10 +13,6 @@ variable "aws_ecs_task_definition_params" {
   type        = map(string)
 }
 
-variable "container_image" {
-  type = string
-}
-
 
 variable "container_name" {
   type = string
@@ -38,10 +34,6 @@ variable "project_name" {
 }
 
 variable "region" {
-  type = string
+  type    = string
   default = "us-east-1"
-}
-
-variable "subnets" {
-  type = list(string)
 }
