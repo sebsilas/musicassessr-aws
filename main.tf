@@ -12,7 +12,19 @@ data "template_file" "container_definitions" {
 }
 
 
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnet_ids" "current"{
+  vpc_id = data.aws_vpc.default.id
+}
+
+
+
+
 locals {
+  subnets_ids=tolist(data.aws_subnet_ids.current.ids)
   stage         = terraform.workspace
   account_id    = data.aws_caller_identity.current.account_id
   ecr_image_tag = "latest"
@@ -69,7 +81,7 @@ resource "aws_ecs_service" "this" {
   desired_count   = 1
 
   network_configuration {
-    subnets          = var.subnets
+    subnets          = local.subnets_ids[0]
     security_groups  = [aws_security_group.ecs.id]
     assign_public_ip = true
   }
