@@ -17,9 +17,9 @@ RUN apt-get update && \
     apt-get clean
 # copy necessary files
 ## app folder
-COPY /app/source_code ./app
+COPY /source_code ./app
 ## renv.lock file
-COPY /app/source_code/renv.lock ./renv.lock
+COPY /source_code/renv.lock ./renv.lock
 
 RUN Rscript -e 'install.packages("renv")'
 RUN Rscript -e 'renv::restore()'
