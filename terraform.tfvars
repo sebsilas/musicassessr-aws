@@ -1,11 +1,11 @@
-container_name                 = "shinny_app"
+container_name                 = "shinny-app"
 aws_ecs_task_definition_params = { cpu = "256", memory = "512" }
 subnets                        = ["subnet-ef2342b5"]
 container_port                 = 3838
-project_name                   = "shinny_app"
+project_name                   = "shinny-app"
 
 project_tags = {
-  PROJECT_NAME = "shinny_app"
+  PROJECT_NAME = "shinny-app"
   OWNER        = "Seb"
-  COSTCENTER   = "shinny_app"
+  COSTCENTER   = "shinny-app"
 }
