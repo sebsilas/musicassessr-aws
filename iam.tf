@@ -123,3 +123,9 @@ resource "aws_iam_policy" "lambda" {
   path   = "/"
   policy = data.aws_iam_policy_document.lambda.json
 }
+
+
+resource "aws_iam_role_policy_attachment" "this" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = aws_iam_policy.lambda.arn
+}
