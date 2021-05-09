@@ -3,13 +3,13 @@ import os
 import subprocess
 import boto3
 from urllib.parse import unquote_plus
-#update the s3 destintation bucket to yours
-S3_DESTINATION_BUCKET = "hmtm-2nd-out"
+
 s3_client = boto3.client('s3')
 
 def handler(event, context):
     parsing_events=json.loads(event['body'])
-    s3_source_bucket = parsing_events['bucketName']
+    S3_DESTINATION_BUCKET = parsing_events['destBucket']
+    s3_source_bucket = parsing_events['sourceBucket']
     s3_source_key = parsing_events['key']
     print(s3_source_key)
     unquoted_s3_source_key = unquote_plus(s3_source_key)
