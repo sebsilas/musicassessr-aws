@@ -69,33 +69,13 @@ data "aws_iam_policy_document" "lambda" {
 
   statement {
     actions = [
-      "s3:GetObject"
+      "s3:PutObject"
     ]
     effect    = "Allow"
     resources = ["${aws_s3_bucket.destination_bucket.arn}/*"]
     sid       = "PutS3Objects"
   }
 
-  statement {
-    actions = [
-      "codecommit:GitPull",
-      "codecommit:GitPush",
-      "codecommit:GitBranch",
-      "codecommit:ListBranches",
-      "codecommit:CreateCommit",
-      "codecommit:GetCommit",
-      "codecommit:GetCommitHistory",
-      "codecommit:GetDifferences",
-      "codecommit:GetReferences",
-      "codecommit:BatchGetCommits",
-      "codecommit:GetTree",
-      "codecommit:GetObjectIdentifier",
-      "codecommit:GetMergeCommit"
-    ]
-    effect    = "Allow"
-    resources = ["*"]
-    sid       = "CodeCommit"
-  }
 }
 
 
@@ -125,7 +105,55 @@ resource "aws_iam_policy" "lambda" {
 }
 
 
-resource "aws_iam_role_policy_attachment" "this" {
+resource "aws_iam_role_policy_attachment" "lambda" {
   role       = aws_iam_role.lambda.name
   policy_arn = aws_iam_policy.lambda.arn
+}
+
+###############################Cognito########################
+
+resource "aws_iam_role" "unauth_iam_role" {
+  name               = "unauth_iam_role"
+  assume_role_policy = <<EOF
+ {
+      "Version": "2012-10-17",
+      "Statement": [
+           {
+                "Action": "sts:AssumeRole",
+                "Principal": {
+                     "Federated": "cognito-identity.amazonaws.com"
+                },
+                "Effect": "Allow",
+                "Sid": ""
+           }
+      ]
+ }
+ EOF
+}
+
+
+
+data "aws_iam_policy_document" "cognito_unauth_policy" {
+  statement {
+    actions = [
+      "s3:PutObject"
+    ]
+    effect    = "Allow"
+    resources = ["${aws_s3_bucket.source_bucket.arn}/*"]
+    sid       = "PutS3Objects"
+  }
+
+}
+
+
+resource "aws_iam_policy" "cognito_unauth_policy" {
+  name   = "${var.project_name}-cognito-unauth-policy"
+  path   = "/"
+  policy = data.aws_iam_policy_document.cognito_unauth_policy.json
+}
+
+
+resource "aws_iam_role_policy_attachment" "cognito_unauth" {
+  role       = aws_iam_role.unauth_iam_role.name
+  policy_arn = aws_iam_policy.cognito_unauth_policy.arn
 }
