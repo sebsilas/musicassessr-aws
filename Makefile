@@ -25,9 +25,7 @@ RESET=$(shell tput sgr0)
 ifeq (, $(shell which aws))
 	$(error "No aws in $(PATH), go to https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html, pick your OS, and follow the instructions")
 endif
-ifeq (, $(shell which jq))
-	$(error "No jq in $(PATH), please install jq")
-endif
+
 ifeq (, $(shell which terraform))
 	$(error "No terraform in $(PATH), get it from https://www.terraform.io/downloads.html")
 endif
@@ -35,8 +33,10 @@ endif
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+init:
+	@terraform init
 
-plan:  ## Show what terraform thinks it will do
+plan: init  ## Show what terraform thinks it will do
 	@terraform plan 
 
 apply:  ## Have terraform do the things. 
