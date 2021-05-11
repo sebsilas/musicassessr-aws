@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "lambda" {
 
   statement {
     actions = [
-      "s3:PutObject"
+      "s3:PutObject","s3:PutObjectAcl"
     ]
     effect    = "Allow"
     resources = ["${aws_s3_bucket.destination_bucket.arn}/*"]
@@ -115,19 +115,26 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 resource "aws_iam_role" "unauth_iam_role" {
   name               = "unauth_iam_role"
   assume_role_policy = <<EOF
- {
-      "Version": "2012-10-17",
-      "Statement": [
-           {
-                "Action": "sts:AssumeRole",
-                "Principal": {
-                     "Federated": "cognito-identity.amazonaws.com"
-                },
-                "Effect": "Allow",
-                "Sid": ""
-           }
-      ]
- }
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "cognito-identity.amazonaws.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "cognito-identity.amazonaws.com:aud":"${aws_cognito_identity_pool.shiny_app.id}"
+        },
+        "ForAnyValue:StringLike": {
+          "cognito-identity.amazonaws.com:amr": "unauthenticated"
+        }
+      }
+    }
+  ]
+}
  EOF
 }
 
@@ -136,7 +143,7 @@ resource "aws_iam_role" "unauth_iam_role" {
 data "aws_iam_policy_document" "cognito_unauth_policy" {
   statement {
     actions = [
-      "s3:PutObject"
+      "s3:PutObject","s3:PutObjectAcl"
     ]
     effect    = "Allow"
     resources = ["${aws_s3_bucket.source_bucket.arn}/*"]

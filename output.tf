@@ -12,5 +12,5 @@ output "s3_source_destination" {
 }
 
 output "aws_cognito_identity_pool" {
-  value = aws_cognito_identity_pool.shiny_app.arn
+  value = aws_cognito_identity_pool.shiny_app.id
 }
