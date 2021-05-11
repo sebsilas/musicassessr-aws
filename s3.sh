@@ -15,4 +15,4 @@ sed  -i -e "s|apigateway|${api_gateway}|g" \
 -e "s|bucket-dest|${destBucket}|g"  index.html
 
 
-aws s3 sync . s3://$(echo $bucketName)
+aws s3 sync . s3://$(echo $bucketName) --acl public-read 
