@@ -1,3 +1,13 @@
+locals {
+  subnets_ids   = tolist(data.aws_subnet_ids.current.ids)
+  stage         = terraform.workspace
+  account_id    = data.aws_caller_identity.current.account_id
+  ecr_image_tag = "latest"
+
+  tags = merge(var.project_tags, { STAGE = local.stage })
+}
+
+
 data "aws_caller_identity" "current" {}
 
 
@@ -16,20 +26,9 @@ data "aws_vpc" "default" {
   default = true
 }
 
+
 data "aws_subnet_ids" "current" {
   vpc_id = data.aws_vpc.default.id
-}
-
-
-
-
-locals {
-  subnets_ids   = tolist(data.aws_subnet_ids.current.ids)
-  stage         = terraform.workspace
-  account_id    = data.aws_caller_identity.current.account_id
-  ecr_image_tag = "latest"
-
-  tags = merge(var.project_tags, { STAGE = local.stage })
 }
 
 

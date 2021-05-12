@@ -14,6 +14,7 @@ resource "null_resource" "lambda_ecr_image" {
   }
 }
 
+
 data "aws_ecr_image" "lambda_image" {
   depends_on = [
     null_resource.lambda_ecr_image

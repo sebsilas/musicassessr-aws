@@ -42,7 +42,6 @@ resource "aws_iam_role_policy_attachment" "this" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = aws_iam_policy.ecs_task_execution_role_policy.arn
 }
-
 ###############################Lambda########################
 
 
@@ -69,7 +68,7 @@ data "aws_iam_policy_document" "lambda" {
 
   statement {
     actions = [
-      "s3:PutObject","s3:PutObjectAcl"
+      "s3:PutObject", "s3:PutObjectAcl"
     ]
     effect    = "Allow"
     resources = ["${aws_s3_bucket.destination_bucket.arn}/*"]
@@ -139,11 +138,10 @@ resource "aws_iam_role" "unauth_iam_role" {
 }
 
 
-
 data "aws_iam_policy_document" "cognito_unauth_policy" {
   statement {
     actions = [
-      "s3:PutObject","s3:PutObjectAcl"
+      "s3:PutObject", "s3:PutObjectAcl"
     ]
     effect    = "Allow"
     resources = ["${aws_s3_bucket.source_bucket.arn}/*"]

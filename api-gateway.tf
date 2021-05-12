@@ -58,6 +58,7 @@ resource "aws_api_gateway_deployment" "this" {
   stage_name  = "api"
 }
 
+
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"

@@ -29,9 +29,11 @@ variable "container_definitions_file" {
   default = "task.json.tpl"
 }
 
+
 variable "project_name" {
   type = string
 }
+
 
 variable "region" {
   type    = string
