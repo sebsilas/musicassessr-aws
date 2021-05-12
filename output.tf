@@ -1,6 +1,5 @@
 output "api_base_url" {
   value       = aws_api_gateway_deployment.this.invoke_url
-  description = "The private IP address of the main server instance."
 }
 
 output "s3_source_bucket" {
