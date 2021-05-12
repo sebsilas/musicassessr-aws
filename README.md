@@ -16,7 +16,7 @@ $ make plan    // Creates an execution plan
 $ make apply // Executes the actions proposed in a Terraform plan
 ```
 This will output "Shiny App URL" on the terminal, which can be used to access Shiny app Webserver.
-Along with "Shiny App URL", you will also get the s3 demo url (previous project) to help test all functionalities are working as expected
+Along with "Shiny App URL", you will also get the s3 demo url (previous project) to help you to test all functionalities are working as expected
 
 If you want to delete all these resources, run the following command:
 ```
