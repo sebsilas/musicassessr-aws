@@ -2,6 +2,20 @@
 
 Terraform project, which creates almost all required AWS resources as well as taking care of building and packaging of required Lambda dependencies and dockerizing Shiny app.
 
+# Architecture Overview
+Deploying this solution wirh Terraform builds the following environment in the AWS Cloud.
+
+![AWS ](architecture.png)
+
+## Resources
+- ECR repository (Docker Container Registry)
+- ECS Cluster + Task definitions + ECS Service (Shiny app Webserver)
+- Lambda Function (Sonic Pyin)
+- Amazon S3
+- Amazon API Gateway ( used to invoke lambda function)
+
+
+
 ## How to use this? <a name="setup"></a>
 This project is based on Terraform.
 ### Prerequisites
