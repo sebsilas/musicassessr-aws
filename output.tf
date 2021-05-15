@@ -14,10 +14,6 @@ output "aws_cognito_identity_pool" {
   value = aws_cognito_identity_pool.shiny_app.id
 }
 
-output "app_s3_demo_url" {
-  value = "${aws_s3_bucket.source_bucket.bucket_domain_name}/index.html"
-}
-
 output "ecs_cluster" {
   value = aws_ecs_cluster.this.name
 }
