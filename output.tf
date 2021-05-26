@@ -1,5 +1,5 @@
 output "api_base_url" {
-  value = aws_api_gateway_deployment.this.invoke_url
+  value       = aws_api_gateway_deployment.this.invoke_url
 }
 
 output "s3_source_bucket" {
