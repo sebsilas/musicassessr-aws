@@ -23,7 +23,7 @@ data "aws_subnet_ids" "current" {
 
 resource "null_resource" "shiny_app_image" {
   triggers = {
-    r_file      = md5(file("${path.module}/app/source_code/ui.R"))
+    r_file      = md5(file("${path.module}/app/source_code/funs.R"))
     docker_file = md5(file("${path.module}/app/Dockerfile"))
   }
 

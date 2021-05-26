@@ -18,10 +18,8 @@ RUN apt-get update && \
 # copy necessary files
 ## app folder
 COPY /source_code ./app
-## renv.lock file
-COPY /source_code/renv.lock ./renv.lock
 
-RUN Rscript -e 'install.packages(c('renv','rjson', 'tidyverse', 'shiny', 'sjmisc', 'htmltools', 'psychTestR', 'rsconnect', 'readxl', 'aws.s3', 'glue', 'psyquest', 'promises', 'future', 'httr', 'async', 'stringi'))'
-RUN Rscript -e 'renv::restore()'
+
+RUN Rscript -e 'install.packages(c("rjson", "tidyverse", "shiny", "sjmisc", "htmltools", "psychTestR", "rsconnect", "readxl", "aws.s3", "glue", "psyquest", "promises", "future", "httr", "async", "stringi"))'
 
 CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]
