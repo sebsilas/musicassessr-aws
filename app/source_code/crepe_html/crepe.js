@@ -80,12 +80,14 @@ var updateActivation = (function() {
   }
 
   const canvas = document.getElementById('activation');
-  const ctx = canvas.getContext('2d');
-  const buffer = ctx.createImageData(canvas.width,canvas.height);
-  var column = 0;
+
+  if(canvas !== null) {
+    const ctx = canvas.getContext('2d');
+      const buffer = ctx.createImageData(canvas.width,canvas.height);
+      var column = 0;
+
 
   return function(activation) {
-    // render
     for (var i = 0; i < 360; i++) {
       value = Math.floor(activation[i] * 256.0);
       if (isNaN(value) || value < 0) value = 0;
@@ -97,6 +99,7 @@ var updateActivation = (function() {
     ctx.putImageData(buffer, canvas.width - column, 0);
     ctx.putImageData(buffer, -column, 0);
   };
+  }
 })();
 
 // bin number -> cent value mapping
@@ -237,7 +240,9 @@ function process_microphone_buffer(event) {
         document.getElementById('estimated-pitch').innerHTML = result;
       }
 
-      updateActivation(activation.dataSync());
+      if(updateActivation) {
+        updateActivation(activation.dataSync());
+      }
 
       // get time elapsed
       var responseTime = new Date().getTime();
@@ -247,11 +252,8 @@ function process_microphone_buffer(event) {
         var timeElapsed = Math.abs(startTime - responseTime);
       }
 
-
-      console.log("plah plah plah");
-
       var curRMS = volumeAudioProcess_SJS(resampled);
-      console.log(curRMS);
+      //console.log(curRMS);
 
       // record results
       if (confidence_rounded > minConfidence &&  predicted_hz_rounded < highestAllowedFreq && predicted_hz_rounded > lowestAllowedFreq && curRMS > 0.1)
@@ -264,12 +266,6 @@ function process_microphone_buffer(event) {
         confidences.push(confidence.toFixed(3));
         timecodes.push(timeElapsed);
         rmses.push(curRMS);
-
-      // print to console
-      //console.log(user_response_frequencies);
-      //console.log(confidences);
-      //console.log(timecodes);
-      console.log(rmses);
 
       // send to Shiny
       Shiny.setInputValue("user_response_frequencies", JSON.stringify(user_response_frequencies));

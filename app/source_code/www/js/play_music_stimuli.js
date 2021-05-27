@@ -464,16 +464,17 @@ function hideRecordButton() {
 
 //
 
-function recordAndStop (ms, showStop, hidePlay, id, type = "aws-pyin") {
+function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin") {
     // start recording but then stop after x milliseconds
     console.log("record and Stop!");
     console.log(hidePlay);
     console.log(showStop);
+    console.log(type);
 
-    if (type === "aws-pyin") {
+    if (type === "aws_pyin") {
       console.log('11');
       // aws record
-      NewAudio.startRecording(id);
+      startRecording();
     }
     else if(type === "crepe") {
       console.log('22');
@@ -488,9 +489,6 @@ function recordAndStop (ms, showStop, hidePlay, id, type = "aws-pyin") {
 
     else {
       console.log('33');
-      // aws record and crepe record
-      NewAudio.startRecording(id);
-      initAudio();crepeResume();
     }
 
      if (ms === null) {
@@ -507,17 +505,19 @@ function recordAndStop (ms, showStop, hidePlay, id, type = "aws-pyin") {
 
 }
 
-function recordUpdateUI(showStop, hidePlay, type = "both") {
+function recordUpdateUI(showStop, hidePlay, type = "aws_pyin") {
 
     // update the recording UI
     // if showStop is true, then give the user the option to press the stop button
     // if hidePlay is true, then hide the play button
     console.log('recordUpdateUI called');
+    console.log(type);
 
     if  (hidePlay === true) {
       console.log('hide play bitch!');
       hidePlayButton();
     }
+
 
     if (showStop === true) {
         setTimeout(() => {  showStopButton(type); }, 500); // a little lag
@@ -528,36 +528,54 @@ function recordUpdateUI(showStop, hidePlay, type = "both") {
 }
 
 
-function showStopButton(type = "audio-both") {
-    console.log('showStopButtoncalled!');
+function showStopButton(type = "aws_pyin") {
 
     var stopButton = document.createElement("button");
     stopButton.style.display = "block";
     stopButton.innerText = "Stop"; // Insert text
 
+
     stopButton.addEventListener("click", function () {
-        if (type === "aws-pyin") {
-          // aws
-          NewAudio.stopRecording("playButton");
-        }
-        else if(type == "crepe") {
+        if(type === "crepe") {
            // crepe
           crepeStop();
         }
 
-        else if (type == "record_midi_page") {
+        else if (type === "record_midi_page") {
            WebMidi.disable();
+           var button_area = document.getElementById("button_area");
+           button_area.appendChild(stopButton);
         }
         else {
-          // both
-          NewAudio.stopRecording("playButton"); crepeStop();
-
+          //
         }
         next_page();
         });
 
-    var button_area = document.getElementById("button_area");
-    button_area.appendChild(stopButton);
+
+        if(type === "crepe") {
+            var button_area = document.getElementById("button_area");
+           button_area.appendChild(stopButton);
+        }
+
+        else {
+          console.log('here we go1 1!');
+          startRecording();
+          var stopButton = document.getElementById("stopButton");
+          controls.style.visibility = 'visible';
+          recordButton.style.visibility = 'hidden';
+          stopButton.style.visibility = 'visible';
+          stopButton.style.display = 'block';
+          stopButton.disabled = false;
+          var loading = document.getElementById("loading");
+          loading.style.visibility = 'hidden';
+
+          stopButton.onclick = function () {
+            next_page();
+            console.log('lettta 122');
+            simpleStopRecording();
+          };
+        }
 
 }
 
@@ -566,7 +584,7 @@ function showRecordingIcon() {
   var img = document.createElement("img");
   img.style.display = "block";
 
-  img.src =  "./img/sing.png";
+  img.src =  "./img/record.gif";
   img.width = "280";
   img.height = "280";
 
@@ -585,3 +603,13 @@ function hideRecordImage() {
    }
 
 }
+
+function toggleRecording(e) {
+    if (e.classList.contains("recording")) {
+        e.classList.remove("recording");
+    } else {
+        e.classList.add("recording");
+    }
+}
+
+

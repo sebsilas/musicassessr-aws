@@ -82,16 +82,15 @@ getmode <- function(v) {
 }
 
 
-present_record_button <- function(present = FALSE, type = "both", midi_device = NULL, interactive = FALSE) {
+present_record_button <- function(present = FALSE, type = "aws_pyin", midi_device = NULL, interactive = FALSE) {
 
-  if (present == TRUE & type == "both" |
-      present == TRUE & type == "crepe" |
-      present == TRUE & type == "aws-pyin") { # in this context, both means both audio protocols (crepe and AWS)
+  if (present == TRUE & type == "crepe" |
+      present == TRUE & type == "aws_pyin") {
 
     div(id = "button_area",
         tags$button("Record", id = "recordButton"),
         tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
-                           recordAndStop(null, true, false, this.id, "both");
+                           recordAndStop(null, true, false, this.id, \"',type,'\");
                            hideRecordButton();
                             });'))
     )
@@ -237,7 +236,6 @@ music.js.scripts <- div(
   includeScript("www/js/opensheetmusicdisplay.min.js"),
   #shiny::tags$script(src = 'https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js'),
   includeScript('https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js'),
-  includeScript("www/js/play_music_stimuli.js")
   #shiny::tags$script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"),
 )
 

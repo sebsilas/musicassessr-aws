@@ -54,19 +54,22 @@ produce.aws.footer.from.credentials <- function(footer_type, wRegion, poolid, s3
 }
 
 
-produce.aws.footer.from.credentials2 <- function(wRegion, poolid, s3bucketName, audioPath) {
-  div(
-    tags$script(src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"),
-    tags$script(src="https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js"),
-    tags$script('
-    //change your info here
-    var destBucket="awsmedx"
-    var api_url="https://pv3r2l54zi.execute-api.us-east-1.amazonaws.com/prod/api"
-    var bucketName = "drm-med-delivery-2020";
-    var bucketRegion = "us-east-1";
-    var IdentityPoolId = "us-east-1:b1f72461-d02c-495a-a7bf-43196809096f";'),
-    includeScript("static-website-s3/app.js")
-  )
+produce.aws.footer.from.credentials2 <- function(method, wRegion, poolid, s3bucketName, audioPath) {
+  if (method == "aws_pyin") {
+    div(
+      tags$script(src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"),
+      tags$script(src="https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js"),
+      tags$script('
+      //change your info here
+      var destBucket="awsmedx"
+      var api_url="https://pv3r2l54zi.execute-api.us-east-1.amazonaws.com/prod/api"
+      var bucketName = "drm-med-delivery-2020";
+      var bucketRegion = "us-east-1";
+      var IdentityPoolId = "us-east-1:b1f72461-d02c-495a-a7bf-43196809096f";'),
+      includeScript("static-website-s3/app.js"),
+      includeScript("www/js/play_music_stimuli.js")
+    )
+  }
 }
 
 # produce.aws.footer.from.credentials(footer_type = "first",

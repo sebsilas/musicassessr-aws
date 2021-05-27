@@ -60,6 +60,8 @@ get_answer_grab_s3_file <- function(input, ...) {
 
 
 get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
+
+  print("get_answer_average_frequency_ff")
   # function factory
   # either round up or down to not go too low or too high for the user when rounding
 

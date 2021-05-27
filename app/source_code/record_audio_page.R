@@ -8,7 +8,7 @@ tidy_freqs <- function(freqs) {
 
 
 record_audio_head_scripts <- function(method) {
-  if (method == "crepe" | method == "both") {
+  if (method == "crepe") {
     res <- div(
       includeScript(path="crepe_html/crepe.js"),
       includeCSS(path = 'crepe_html/crepe.css'),
@@ -21,13 +21,12 @@ record_audio_head_scripts <- function(method) {
 }
 
 
-deploy_crepe <- function(method, crepe_stats = FALSE) {
-  print('deploy_crepe')
-  print(crepe_stats)
-  print(crepe_stats == TRUE & method == "crepe" | crepe_stats == TRUE & method == "both")
-  if (crepe_stats == TRUE & method == "crepe" | crepe_stats == TRUE & method == "both") {
 
-    div(shiny::tags$canvas(id = "activation"),
+deploy_crepe <- function(method, crepe_stats = FALSE) {
+
+  if (crepe_stats == TRUE & method == "crepe") {
+
+    tags$div(shiny::tags$canvas(id = "activation"),
         tags$div(id="output",
                  br(),
                  tags$p('Status: ', tags$span(id="status")), tags$br(),
@@ -37,9 +36,31 @@ deploy_crepe <- function(method, crepe_stats = FALSE) {
                  tags$p('Your sample rate is', tags$span(id="srate"), ' Hz.')))
   }
   else {
+    tags$div()
+  }
+}
+
+
+deploy_aws_pyin <- function(method, crepe_stats = FALSE, show_aws_controls = TRUE) {
+
+  if (method == "aws_pyin") {
+    # NB: remove style attribute from pauseButton and/or recordingsList to show pause button or recordings respectively
+    tags$div(htmltools::HTML('<div id="controls">
+  	 <button id="recordButton">Record</button>
+  	 <button id="pauseButton" disabled style="display: none;">Pause</button>
+  	 <button id="stopButton" disabled>Stop</button>
+    </div>
+    <div id="formats" style="display: none;">Format: start recording to see sample rate</div>
+  	<p style="display: none;"><strong>Recordings:</strong></p>
+  	<ol id="recordingsList" style="display: none;"></ol>
+        <div id="loading" style="display: none;"></div>
+        <div id="csv_file" style="display: none;"></div>'), show_aws_buttons(show_aws_controls))
+  }
+  else {
     div()
   }
 }
+
 
 
 plot.note.data <- function(notes, onsets, quantized_notes) {
@@ -62,13 +83,49 @@ plot.note.data <- function(notes, onsets, quantized_notes) {
 
 }
 
+show_aws_buttons <- function(show_aws_controls) {
+  print('show_aws_buttons')
+  print(show_aws_controls)
+  print('show--aassswubttons')
 
+  if(show_aws_controls == FALSE) {
+    aws_controls <- tags$script('var controls = document.getElementById("controls");
+                                controls.style.visibility = \'hidden\'; // start hidden
+                                console.log("hide controls");')
+  }
+  else {
+    aws_controls <- tags$script('')
+  }
+
+  aws_controls
+}
+
+auto_record_after_play_aws <- function(auto_record) {
+  print('heres autio record')
+  print(auto_record)
+  if (auto_record) {
+    tags$script('startRecording();
+    recordButton.style.visibility = \'hidden\';
+                  stopButton.disabled = false;
+                console.log(\'hey we got dat\');
+                ')
+  }
+}
 
 record_audio_page <- function(body = NULL, label = "record_audio", stimuli = " ", stimuli_reactive = FALSE, page_text = " ", page_title = " ", interactive = FALSE,
                               note_no = "max", show_record_button = FALSE, get_answer = get_answer_store_async_builder(page_id = "record_audio_page"), transpose = 0, answer_meta_data = 0,
-                              method = c("both", "crepe", "aws-pyin"), crepe_stats = FALSE, ...) {
+                              method = c("aws_pyin", "crepe"), show_aws_controls = FALSE, crepe_stats = FALSE, ...) {
+
+  print('show_aws_controls')
+  print(show_aws_controls)
 
   #note_no_js_script <- set.note.no(stimuli, note_no)
+  if (show_aws_controls) {
+    auto_record_after_play_for_aws <- FALSE
+  } else {
+    auto_record_after_play_for_aws <- TRUE
+  }
+
 
     psychTestR::page(ui = tags$div(
 
@@ -101,25 +158,14 @@ record_audio_page <- function(body = NULL, label = "record_audio", stimuli = " "
                          prepared_stimuli = abs_mel),
 
         present_record_button(show_record_button, type = method),
-        trigger_button("next", "Next"),
-      # NB: remove style attribute from pauseButton and/or recordingsList to show pause button or recordings respectively
-
-        htmltools::HTML('<div id="controls">
-  	 <button id="recordButton">Record</button>
-  	 <button id="pauseButton" disabled style="display: none;">Pause</button>
-  	 <button id="stopButton" disabled>Stop</button>
-    </div>
-    <div id="formats">Format: start recording to see sample rate</div>
-  	<p><strong>Recordings:</strong></p>'),
 
         tags$div(id ="container",
-                 htmltools::HTML('<ol id="recordingsList" style="display: none;"></ol>
-        <div id="loading"></div>
-        <div id="csv_file"></div>'),
+                 deploy_aws_pyin(method = method, show_aws_controls = show_aws_controls),
                  deploy_crepe(method),
         ),
 
-        produce.aws.footer.from.credentials2(wRegion = wRegion,
+        produce.aws.footer.from.credentials2(method = method,
+                                             wRegion = wRegion,
                                             poolid = poolid,
                                             s3bucketName = s3bucketName,
                                             audioPath = audioPath)

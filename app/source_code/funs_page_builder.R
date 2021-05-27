@@ -1,5 +1,5 @@
 
-play_until_satisfied_loop <- function(prompt_text, var_name, page_type) {
+get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type) {
 
   midi_or_audio <- function(type) {
     if (type == "record_audio_page") {
@@ -7,6 +7,7 @@ play_until_satisfied_loop <- function(prompt_text, var_name, page_type) {
                         label = var_name,
                         get_answer = get_answer_average_frequency_ff("round"),
                         show_record_button = TRUE,
+                        show_aws_controls = FALSE,
                         method = "crepe")
     }
     else {
@@ -68,8 +69,8 @@ get_instrument_range_pages <- function(type) {
 
   if (type == "record_audio_page") {
     join(
-      play_until_satisfied_loop(prompt_text = "Please play or sing the lowest comfortable note on your instrument", var_name = "bottom_range", page_type = "record_audio_page"),
-      play_until_satisfied_loop(prompt_text = "Please play or sing the highest comfortable note on your instrument", var_name = "top_range", page_type = "record_audio_page"),
+      get_note_until_satisfied_loop(prompt_text = "Please play or sing the lowest comfortable note on your instrument", var_name = "bottom_range", page_type = "record_audio_page"),
+      get_note_until_satisfied_loop(prompt_text = "Please play or sing the highest comfortable note on your instrument", var_name = "top_range", page_type = "record_audio_page"),
       reactive_page(function(state, ...) {
         lowest_user_note <- get_global("bottom_range", state)
         highest_user_note <- get_global("top_range", state)
@@ -80,8 +81,8 @@ get_instrument_range_pages <- function(type) {
   }
   else {
     join(
-      play_until_satisfied_loop(prompt_text = "Please play the lowest note on your MIDI keyboard.", var_name = "bottom_range", page_type = "record_midi_page"),
-      play_until_satisfied_loop(prompt_text = "Please play the highest note on your MIDI keyboard.", var_name = "top_range", page_type = "record_midi_page"),
+      get_note_until_satisfied_loop(prompt_text = "Please play the lowest note on your MIDI keyboard.", var_name = "bottom_range", page_type = "record_midi_page"),
+      get_note_until_satisfied_loop(prompt_text = "Please play the highest note on your MIDI keyboard.", var_name = "top_range", page_type = "record_midi_page"),
       reactive_page(function(state, ...) {
         lowest_user_note <- get_global("bottom_range", state)
         highest_user_note <- get_global("top_range", state)
@@ -155,6 +156,7 @@ play_melody_until_satisfied_loop <- function(melody = NULL, melody_no = "x", var
                           page_title = " ",
                           page_text = "Press play to hear the melody then play it back as best you can when it finishes.",
                           page_type = page_type,
+                          record_audio_method = "aws_pyin",
                           answer_meta_data = answer_meta_data,
                           get_answer = get_answer_store_async_builder(page_id = paste0("melody_", melody_no)) )
           }

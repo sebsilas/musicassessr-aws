@@ -1,6 +1,6 @@
 # constants
 
-#setwd("/Users/sebsilas/PhD 2021/magma-Gold/magmaGold/R")
+setwd("/Users/sebsilas/PhD 2021/magma-Gold/magmaGold/R")
 # get all includes
 
 source('inc.R')
@@ -15,27 +15,7 @@ examples <- list("1" = "62,64,65,67,64,60,62",
 
 
 
-PBET_example_protocol <- function(page_type) {
 
-  c(
-
-    one_button_page(body = tags$p("Now you will do two practice rounds.")),
-
-    play_melody_until_satisfied_loop(melody = examples[['1']],
-                                      var_name = "melody",
-                                      max_goes = 3,
-                                      page_type = page_type),
-
-    play_melody_until_satisfied_loop(melody = examples[['2']],
-                                      var_name = "melody",
-                                      max_goes = 3,
-                                      page_type = page_type),
-
-    one_button_page(body = tags$p("Great, well done! Now you should be ready for the real test. Please ask the experimenter before proceeding, if you have any questions."))
-
-  )
-
-}
 
 
 PBET_intro <- function(page_type) {
@@ -50,14 +30,40 @@ PBET_intro <- function(page_type) {
     NAFC_page(label = "headphones_and_microphone_check",
               choices = c("Yes", "No"),
               prompt = div(tags$p("To complete this test, you will need:"),
-                           tags$ul(
+                           tags$ul(class = "roman",
                              tags$li("headphones"),
                              tags$li("a quiet environment"),
-                             tags$li("to record your instrument, either a good microphone", tags$em("or"),  "MIDI input device e.g keyboard already plugged in")
-                           ),
+                             tags$li("to record your instrument, either: "),
+                              tags$ul(class = "square",
+                                      tags$li("a microphone", tags$em("or")),
+                                      tags$li("a MIDI input device already plugged in")
+                           )),
                            tags$p("Before proceeding, do you have all the above?")),
               on_complete = have.requirements
     )
+  )
+
+}
+
+
+PBET_example_protocol <- function(page_type) {
+
+  c(
+
+    one_button_page(body = tags$p("Now you will do two practice rounds.")),
+
+    play_melody_until_satisfied_loop(melody = examples[['1']],
+                                     var_name = "melody",
+                                     max_goes = 3,
+                                     page_type = page_type),
+
+    play_melody_until_satisfied_loop(melody = examples[['2']],
+                                     var_name = "melody",
+                                     max_goes = 3,
+                                     page_type = page_type),
+
+    one_button_page(body = div(tags$p("Great, well done! Now you should be ready for the real test."), tags$p("Please ask the experimenter before proceeding, if you have any questions.")))
+
   )
 
 }

@@ -17,6 +17,10 @@ library(async)
 plan(multisession)
 library(stringi)
 
+# install.packages(c('rjson', 'tidyverse', 'shiny', 'sjmisc',
+#                    'htmltools', 'psychTestR', 'rsconnect', 'readxl',
+#                    'aws.s3', 'glue', 'psyquest', 'promises', 'future', 'httr', 'async', 'stringi'))
+
 
 # includes
 source('constants.R')
@@ -24,7 +28,6 @@ source("simile.R")
 source('html.R')
 source('funs.R')
 source('funs_AWS.R')
-source('funs_CREPE.R')
 source('funs_get_answer.R')
 source('record_audio_page.R')
 source('record_midi_page.R')
@@ -41,6 +44,9 @@ source('preset_corpuses.R')
 source('html.R')
 source('record_key_presses_page.R')
 source('pages_custom.R')
+
+
+
 
 
 
