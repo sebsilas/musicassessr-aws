@@ -1,5 +1,5 @@
 container_name                 = "shinny-app"
-aws_ecs_task_definition_params = { cpu = "256", memory = "512" }
+aws_ecs_task_definition_params = { cpu = "2048", memory = "4096" }
 container_port                 = 3838
 project_name                   = "shinny-app"
 

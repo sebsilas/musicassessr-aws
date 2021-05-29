@@ -278,6 +278,7 @@ build_test_items_from_user_range <- function(corpus = WJD, n_range = 3:15, n = 2
 
     }) %...>% (function(result) {
       print('building melodies in range done')
+      showNotification("Your test is ready.")
       print(result)
       set_global("melodies", result, state)
     })

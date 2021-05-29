@@ -1,4 +1,8 @@
 
+get_answer_null <- function(input, state, ...) {
+  list()
+}
+
 get_answer_simple_send_to_s3 <- function(input, ...) {
   print("get_answer simple sent to s3!")
   print(input$timestamp)
@@ -101,43 +105,9 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 }
 
 
-
-get_answer_store_async <- function(input, state, page_id, ...) {
-
-  print('get_answer_store_async!')
-  print(page_id)
-
-  json <- rjson::toJSON(list(sourceBucket = input$sourceBucket,
-                             key = input$key,
-                             destBucket = input$destBucket))
-
-
-  do <- function() {
-    headers <- c("content-type" = "application/json")
-    http_post("https://pv3r2l54zi.execute-api.us-east-1.amazonaws.com/prod/api", data = json, headers = headers)$
-      then(http_stop_for_status)$
-      then(function(x) {
-
-        key <- rjson::fromJSON(rawToChar(x$content))$key
-        bucket <- rjson::fromJSON(rawToChar(x$content))$Bucket
-        link_href <- paste0("https://", bucket, ".s3.amazonaws.com/", key)
-        csv <- read_csv(link_href, col_names = c("onset", "dur", "freq"))
-        csv <- csv %>% mutate(midi = round(freq_to_midi(freq)))
-        csv$midi
-
-      })
-  }
-
-  page_promise <- future({ synchronise(do()) })
-
-  set_global(page_id, page_promise , state)
-
-}
-
 get_answer_store_async_builder <- function(page_id) {
-  print('get_answer_store_async_builder')
-  print(page_id)
-  get_answer_store_async <- function(input, state, ...) {
+
+  get_answer_store_async <- function(input, state, opt, ...) {
 
     print('get_answer_store_async!')
     print(page_id)
@@ -158,21 +128,41 @@ get_answer_store_async_builder <- function(page_id) {
           link_href <- paste0("https://", bucket, ".s3.amazonaws.com/", key)
           csv <- read_csv(link_href, col_names = c("onset", "dur", "freq"))
           csv <- csv %>% mutate(midi = round(freq_to_midi(freq)))
+          print('answer back!')
+          print(csv$midi)
           csv$midi
 
         })
     }
 
-    page_promise <- future({ synchronise(do()) })
+    user_response <- NULL
 
-    set_global(page_id, page_promise , state)
+    page_promise <- future({ synchronise(do()) })%...>% (function(result) {
+          print('here result!')
+          print(result)
+          result
+          save_results_to_disk(complete = FALSE, state = state, opt = opt)
+          result
+    })
+    # https://stackoverflow.com/questions/57192690/get-value-from-r-fullfilled-promise
+    # ^ might be an option, but couldn't get it to work in psychTestR
+
+
+
+    set_global(page_id, page_promise , state) # save to global just in case
+
+    list(promise_result = page_promise,
+         key = input$key
+         )
 
   }
 }
 
 get_answer_midi <- function(input, ...) {
 
-  if(is.null(input$user_response_midi_note_on)) { shiny::showNotification("You didn't enter anything!") }
+  if(is.null(input$user_response_midi_note_on)) {
+    shiny::showNotification("You didn't enter anything!")
+  }
 
 
   list(fromJSON(input$stimuli),

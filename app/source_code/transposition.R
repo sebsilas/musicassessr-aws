@@ -187,7 +187,7 @@ names(instrument_list) <- c("Alto Saxophone", "Bass Clarinet", "Bass", "Clarinet
 
 
 # create key rankings table
-key_rankings <- group_by(wjd_meta, instrument) %>% count(key)
+key_rankings <- group_by(wjd_meta, instrument) %>% dplyr::count(key)
 key_rankings$key_centre <- sapply(key_rankings$key, function(x) strsplit(x, "-")[[1]][1])
 key_rankings$key_tonality <- sapply(key_rankings$key, function(x) strsplit(x, "-")[[1]][2])
 key_rankings$key_tonality[key_rankings$key_tonality == "maj"] <- "major"

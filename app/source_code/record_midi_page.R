@@ -5,6 +5,7 @@ select_midi_device_page <- function() {
 
     ui = tags$div(
       tags$h2("Select MIDI device"),
+      tags$p("Your device should have been plugged in before you reached this page. It may take a moment to appear."),
       tags$select(id = "midiDeviceSelector"),
       tags$br(),
       tags$br(),
@@ -51,7 +52,7 @@ get_answer_midi <- function(input, ...) {
 
 
 record_midi_page <- function(body = NULL, label = "record_audio", stimuli = " ", stimuli_reactive = FALSE, page_text = " ", page_title = " ", interactive = FALSE,
-                              note_no = "max", show_record_button = FALSE, get_answer = get_answer_simple_send_to_s3, transpose = 0, answer_meta_data = 0,
+                              note_no = "max", show_record_button = FALSE, get_answer = get_answer_midi, transpose = 0, answer_meta_data = 0,
                              autoInstantiate = FALSE, midi_device, ...) {
 
   #note_no_js_script <- set.note.no(stimuli, note_no)

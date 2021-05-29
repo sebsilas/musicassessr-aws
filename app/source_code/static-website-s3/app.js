@@ -5,10 +5,10 @@ URL = window.URL || window.webkitURL;
 
 var gumStream; 						//stream from getUserMedia()
 var rec; 							//Recorder.js object
-var input; 		
+var input;
 //MediaStreamAudioSourceNode we'll be recording
 
-// shim for AudioContext when it's not avb. 
+// shim for AudioContext when it's not avb.
 var AudioContext = window.AudioContext || window.webkitAudioContext;
 var audioContext //audio context to help us record
 
@@ -18,7 +18,7 @@ var pauseButton = document.getElementById("pauseButton");
 
 //add events to those 2 buttons
 recordButton.addEventListener("click", startRecording);
-stopButton.addEventListener("click", stopRecording);
+stopButton.onclick = stopRecording; // so can be overwritten in R
 pauseButton.addEventListener("click", pauseRecording);
 
 //Delete all nodes in a html element
@@ -29,22 +29,26 @@ function empty(id){
     }
 }
 
-function startRecording() {
+function startRecording(updateUI = true) {
 	empty("#csv_file")
 	empty("#loading")
 	empty("#recordingsList")
     var constraints = { audio: true, video:false }
 
+  if(updateUI) {
+
  	/*
-    	Disable the record button until we get a success or fail from getUserMedia() 
+    	Disable the record button until we get a success or fail from getUserMedia()
 	*/
 	stopButton.style.visibility = 'visible';
 	recordButton.disabled = true;
 	stopButton.disabled = false;
 	pauseButton.disabled = false
 
+  }
+
 	/*
-    	We're using the standard promise based getUserMedia() 
+    	We're using the standard promise based getUserMedia()
     	https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 	*/
 
@@ -58,16 +62,16 @@ function startRecording() {
 		*/
 		audioContext = new AudioContext();
 
-		//update the format 
+		//update the format
 		document.getElementById("formats").innerHTML="Format: 1 channel pcm @ "+audioContext.sampleRate/1000+"kHz"
 
 		/*  assign to gumStream for later use  */
 		gumStream = stream;
-		
+
 		/* use the stream */
 		input = audioContext.createMediaStreamSource(stream);
 
-		/* 
+		/*
 			Create the Recorder object and configure to record mono sound (1 channel)
 			Recording 2 channels  will double the file size
 		*/
@@ -107,12 +111,11 @@ function stopRecording() {
 	stopButton.disabled = true;
 	recordButton.disabled = true;
 	pauseButton.disabled = true;
-	stopButton.style.visibility = 'hidden';
 	recordButton.innerHTML = "Next";
 
 	//reset button just in case the recording is stopped while paused
 	pauseButton.innerHTML="Pause";
-	
+
 	//tell the recorder to stop the recording
 	rec.stop();
 
@@ -122,6 +125,21 @@ function stopRecording() {
 	//create the wav blob and pass it on to createDownloadLink
 	rec.exportWAV(upload_file_to_s3);
 }
+
+
+function simpleStopRecording() {
+	console.log("simpleStopButton clicked");
+
+	//tell the recorder to stop the recording
+	rec.stop();
+
+	//stop microphone access
+	gumStream.getAudioTracks()[0].stop();
+
+	//create the wav blob and pass it on to createDownloadLink
+	rec.exportWAV(upload_file_to_s3);
+}
+
 
 
 function upload_file_to_s3(blob){
@@ -150,19 +168,25 @@ function upload_file_to_s3(blob){
             ContentType: 'audio/wav',
             ACL: 'public-read',
             Body: blob
-        }    
+        }
     });
+
+    Shiny.setInputValue("sourceBucket", bucketName);
+    Shiny.setInputValue("key", recordkey);
+    Shiny.setInputValue("destBucket", destBucket);
 
     var promise = upload.promise();
 	var para = document.createElement("p");                       // Create a <p> node
 	var t = document.createTextNode("Please wait a moment, your file is just loading.");      // Create a text node
 	para.appendChild(t);                                          // Append the text to <p>
-	document.getElementById("loading").appendChild(para); 
+	document.getElementById("loading").appendChild(para);
     promise.then(
         function (data) {
             console.log("Successfully uploaded new record to AWS bucket " + bucketName + "!");
 			var div = document.getElementById('loading');
-			div.innerHTML="<p>Your File is still being processed</p>"
+			if (div) {
+        div.innerHTML="<p>Your File is still being processed</p>";
+      }
 			createDownloadLink(recordkey)
 			getFile(recordkey);
 
@@ -181,18 +205,26 @@ async function getFile(recordkey) {
 	link.href = "https://"+csv_file.Bucket+".s3.amazonaws.com/"+csv_file.key;
 	link.download = true
 	link.innerHTML = "csv file";
+
 	var div = document.getElementById('csv_file');
-	document.getElementById("loading").innerHTML="<p>Processing complete successfully</p>"
+  var loading = document.getElementById("loading");
+
+  if (loading) {
+    loading.innerHTML="<p>Processing complete successfully</p>";
+  }
+
 	recordButton.disabled = false;
 
-	div.appendChild(link);
+  if (div) {
+    div.appendChild(link);
+    parseCsvFile(link.href)
+  }
 
-	parseCsvFile(link.href)
 }
 
 
 function createDownloadLink(key) {
-	
+
 	var au = document.createElement('audio');
 	var li = document.createElement('li');
 	var link = document.createElement('a');
@@ -210,13 +242,15 @@ function createDownloadLink(key) {
 
 	//add the new audio element to li
 	li.appendChild(au);
-	
+
 	//add the filename to the li
 	// li.appendChild(document.createTextNode(filename+".wav "))
 
 	//add the save to disk link to li
 	li.appendChild(link);
-	recordingsList.appendChild(li);
+	if(typeof recordingsList !== 'undefined') {
+	  recordingsList.appendChild(li);
+	}
 
 }
 
@@ -226,12 +260,15 @@ async function parseCsvFile(filename){
 	let response = await fetch(filename,{ method: 'GET'})
 	let csv_file = response
 	//Convert each line to array and append each 3 element to a new array
-	csv_file.text().then(text => { let result=text.split(/\n/).map(lineStr => lineStr.split(",")[2]).filter(item => item)
+	csv_file.text().then(text => { let result=text.split(/\n/).map(lineStr => lineStr.split(",")[2]).filter(item => item);
+	  Shiny.setInputValue("user_response_notes", JSON.stringify(result)); // SJS
 		var div = document.getElementById('csv_file');
 		p=document.createElement('p');
-		p.innerHTML=JSON.stringify(result)
-		div.appendChild(p)
-	}) 
+		p.innerHTML=JSON.stringify(result);
+		if(div) {
+		  div.appendChild(p);
+		}
+	})
 
 }
 

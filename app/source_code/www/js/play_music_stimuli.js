@@ -474,7 +474,7 @@ function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin") {
     if (type === "aws_pyin") {
       console.log('11');
       // aws record
-      startRecording();
+      startRecording(updateUI = false);
     }
     else if(type === "crepe") {
       console.log('22');
@@ -518,61 +518,60 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin") {
       hidePlayButton();
     }
 
+    setTimeout(() => {  showRecordingIcon(); }, 500); // a little lag
+
 
     if (showStop === true) {
-        setTimeout(() => {  showStopButton(type); }, 500); // a little lag
+        setTimeout(() => {  showStopButton(type); }, 500); // a little more lag
     }
-
-    setTimeout(() => {  showRecordingIcon(); }, 500); // a little lag
 
 }
 
 
 function showStopButton(type = "aws_pyin") {
+        console.log("what is the type?");
+        console.log(type);
 
-    var stopButton = document.createElement("button");
-    stopButton.style.display = "block";
-    stopButton.innerText = "Stop"; // Insert text
+        if(type === "crepe" | type === "record_midi_page") {
 
+          var stopButton = document.createElement("button");
+          stopButton.style.display = "block";
+          stopButton.innerText = "Stop"; // Insert text
+          stopButton.addEventListener("click", function () {
+              if(type === "crepe") {
+                 // crepe
+                crepeStop();
+              }
 
-    stopButton.addEventListener("click", function () {
-        if(type === "crepe") {
-           // crepe
-          crepeStop();
-        }
-
-        else if (type === "record_midi_page") {
-           WebMidi.disable();
-           var button_area = document.getElementById("button_area");
-           button_area.appendChild(stopButton);
-        }
-        else {
-          //
-        }
-        next_page();
-        });
-
-
-        if(type === "crepe") {
-            var button_area = document.getElementById("button_area");
-           button_area.appendChild(stopButton);
+              else if (type === "record_midi_page") {
+                 WebMidi.disable();
+                 var button_area = document.getElementById("button_area");
+                 button_area.appendChild(stopButton);
+              }
+              else {
+                //
+              }
+              next_page();
+              });
+          var button_area = document.getElementById("button_area");
+          button_area.appendChild(stopButton);
         }
 
         else {
           console.log('here we go1 1!');
-          startRecording();
-          var stopButton = document.getElementById("stopButton");
-          controls.style.visibility = 'visible';
-          recordButton.style.visibility = 'hidden';
-          stopButton.style.visibility = 'visible';
-          stopButton.style.display = 'block';
-          stopButton.disabled = false;
+
+          startRecording(updateUI = false);
+          recordButton.style.display = 'none';
+
           var loading = document.getElementById("loading");
           loading.style.visibility = 'hidden';
 
+          var stopButton = document.getElementById("stopButton");
+          stopButton.disabled = false;
+          stopButton.style.visibility = 'visible';
+
           stopButton.onclick = function () {
             next_page();
-            console.log('lettta 122');
             simpleStopRecording();
           };
         }

@@ -8,7 +8,7 @@ source('simile.R')
 # midi notes
 
 
-present_stimuli_midi_notes_auditory <- function(stimuli, note_length, sound = "piano", button_text = "Play", ...) {
+present_stimuli_midi_notes_auditory <- function(stimuli, note_length, sound = "piano", button_text = "Play", page_type, ...) {
 
   if (length(stimuli) == 1 & is.character(stimuli) == FALSE) {
     melody.for.js <- midi_to_freq(stimuli-12) # there is a bug where the piano plays up an octave
@@ -16,7 +16,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length, sound = "p
   }
   else {
     melody.for.js <- toJSON(stimuli)
-    js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', 'aws_pyin');")
+    js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\");")
   }
 
   shiny::tags$div(

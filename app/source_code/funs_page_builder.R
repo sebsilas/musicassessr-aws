@@ -96,7 +96,7 @@ get_instrument_range_pages <- function(type) {
 
 
 play_melody_until_satisfied_loop <- function(melody = NULL, melody_no = "x", var_name = "melody", max_goes = 3,
-                                             page_type, page_title = " ", answer_meta_data = " ") {
+                                             page_type, page_title = " ", answer_meta_data = " ", get_answer = get_answer_store_async_builder(page_id = paste0("melody_", melody_no))) {
 
 
   c(
@@ -118,6 +118,10 @@ play_melody_until_satisfied_loop <- function(melody = NULL, melody_no = "x", var
       user_wants_to_play_again == "Try Again" & move_on == TRUE },
       logic = list(
         reactive_page(function(state, ...) {
+
+          number_attempts <- get_global("number_attempts", state)
+          print('number attempts: ')
+          print(number_attempts)
 
           if(is.null(melody)) {
             melodies <- get_global("melodies", state)
@@ -144,8 +148,9 @@ play_melody_until_satisfied_loop <- function(melody = NULL, melody_no = "x", var
                             page_text = "Press play to hear the melody then play it back as best you can when it finishes.",
                             page_type = page_type,
                             answer_meta_data = answer_meta_data,
-                            get_answer = get_answer_store_async_builder(page_id = paste0("melody_", melody_no)),
-                            midi_device = midi_device)
+                            get_answer = get_answer,
+                            midi_device = midi_device,
+                            page_label = paste0(var_name,"_", melody_no, "_attempt_", number_attempts))
           } else {
 
 
@@ -158,7 +163,8 @@ play_melody_until_satisfied_loop <- function(melody = NULL, melody_no = "x", var
                           page_type = page_type,
                           record_audio_method = "aws_pyin",
                           answer_meta_data = answer_meta_data,
-                          get_answer = get_answer_store_async_builder(page_id = paste0("melody_", melody_no)) )
+                          get_answer = get_answer,
+                          page_label = paste0(var_name,"_", melody_no, "_attempt_", number_attempts))
           }
 
         }),
@@ -168,8 +174,8 @@ play_melody_until_satisfied_loop <- function(melody = NULL, melody_no = "x", var
           number_attempts <- get_global("number_attempts", state)
           attempts_left <- max_goes - number_attempts
 
-          NAFC_page(label = paste0(var_name,"_", number_attempts), prompt = paste0("If you were happy with your response, please click to continue, otherwise please click to try again. You have ", attempts_left, " attempts remaining if you would like."),
-                    choices = c("Continue", "Try Again"))
+          NAFC_page(label = paste0(var_name,"_attempt_", number_attempts, "_choice"), prompt = tags$div(tags$p("If you were happy with your response, please click to continue, otherwise please click to try again."), tags$p(paste0("You have ", attempts_left, " attempts remaining if you would like."))),
+                    choices = c("Continue", "Try Again"), save_answer = FALSE)
         }),
         code_block(function(state, answer, ...) {
           set_global("user_satisfied", answer, state)

@@ -112,7 +112,7 @@ auto_record_after_play_aws <- function(auto_record) {
   }
 }
 
-record_audio_page <- function(body = NULL, label = "record_audio", stimuli = " ", stimuli_reactive = FALSE, page_text = " ", page_title = " ", interactive = FALSE,
+record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli = " ", stimuli_reactive = FALSE, page_text = " ", page_title = " ", interactive = FALSE,
                               note_no = "max", show_record_button = FALSE, get_answer = get_answer_store_async_builder(page_id = "record_audio_page"), transpose = 0, answer_meta_data = 0,
                               method = c("aws_pyin", "crepe"), show_aws_controls = FALSE, crepe_stats = FALSE, ...) {
 

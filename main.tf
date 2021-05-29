@@ -36,3 +36,4 @@ resource "null_resource" "shiny_app_image" {
        EOF
   }
 }
+

@@ -41,7 +41,7 @@ page_types = c("one_button_page",
 
 retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_underlying_page_type = "one_button_page", get_answer = NULL,
                                page_text = "Click to hear the stimuli", page_title = " ", interactive, stimuli,
-                               stimuli_reactive = FALSE, answer_meta_data = NULL, midi_device = " ", record_audio_method = "aws_pyin", show_aws_controls = FALSE, ...) {
+                               stimuli_reactive = FALSE, answer_meta_data = NULL, midi_device = " ", record_audio_method = "aws_pyin", show_aws_controls = FALSE, page_label = " ", ...) {
 
 
   # page.fun <- get(page_type_string, asNamespace("psychTestR"))
@@ -88,6 +88,7 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
     args$midi_device <- midi_device
     args$method <- record_audio_method
     args$show_aws_controls <- show_aws_controls
+    args$label <- page_label
   }
 
   else if(stimuli_reactive != FALSE & page_type_string == "record_audio_page") {
@@ -99,6 +100,7 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
     args$get_answer <- get_answer
     args$method <- record_audio_method
     args$show_aws_controls <- show_aws_controls
+    args$label <- page_label
   }
 
   else if(stimuli_reactive != FALSE & page_type_string == "record_midi_page") {
@@ -109,10 +111,11 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
     args$page_title <- page_title
     args$get_answer <- get_answer
     args$midi_device <- midi_device
+    args$label <- page_label
   }
 
   else {
-    #
+    #stop('Unknown special page type.')
   }
 
   # set the page up with additional arguments
@@ -145,7 +148,8 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
   else if (stimuli_type == "midi_notes") {
     return_stimuli <- present_stimuli_midi_notes(stimuli, display_modality, get_answer = get_answer,
                                                  page_type = page_type, midi_device = midi_device,
-                                                 record_audio_method = record_audio_method, show_aws_controls = show_aws_controls, ...)
+                                                 record_audio_method = record_audio_method,
+                                                 show_aws_controls = show_aws_controls, page_label = page_label, ...)
   }
 
   else if (stimuli_type == "frequencies") {
@@ -189,7 +193,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
 present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type = "one_button_page",
                             page_text = " ", page_title = " ",  slide_length,
                             special_page_underlying_page_type = "one_button_page", record_audio_method = "aws_pyin",
-                            answer_meta_data = NULL, get_answer = NULL, stimuli_reactive = FALSE, midi_device = " ", show_aws_controls = FALSE,...) {
+                            answer_meta_data = NULL, get_answer = NULL, stimuli_reactive = FALSE, midi_device = " ", show_aws_controls = FALSE, page_label = "x", ...) {
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (stimuli_reactive == FALSE) {
@@ -221,7 +225,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               stimuli_wrapped = return_stimuli,
                               page_text = page_text, page_title = page_title, interactive = interactive,
                               stimuli = stimuli, stimuli_reactive = stimuli_reactive,
-                              answer_meta_data = answer_meta_data, get_answer = get_answer, midi_device = midi_device, ...)
+                              answer_meta_data = answer_meta_data, get_answer = get_answer, midi_device = midi_device, page_label = page_label, ...)
 
   }
 
@@ -232,7 +236,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               page_text = page_text, page_title = page_title, interactive = interactive,
                               stimuli = stimuli, stimuli_reactive = stimuli_reactive, answer_meta_data = answer_meta_data,
                               get_answer = get_answer, record_audio_method = record_audio_method,
-                              show_aws_controls = show_aws_controls, ...)
+                              show_aws_controls = show_aws_controls, page_label = page_label, ...)
 
   }
 

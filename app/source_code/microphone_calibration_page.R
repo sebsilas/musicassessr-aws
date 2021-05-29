@@ -36,7 +36,7 @@ microphone_calibration_page <- function(admin_ui = NULL, on_complete = NULL, lab
         onclick = "toggleRecording(this);crepe();initTF();crepeResume();",
         style = "display:block; margin:1px auto;", width = "100px", height = "100px"),
 
-    tags$p("Click on the microphone and wait a few seconds.
+    tags$p("Click Allow on the pop-up. Then click on the microphone image and wait a few seconds.
            You should see a black box start scrolling across the page."),
     tags$p("If you see activity inside the box when you make noise, then the microphone is working."),
 
