@@ -7,11 +7,12 @@ Deploying this solution wirh Terraform builds the following environment in the A
 
 ![AWS ](architecture.png)
 
-## Resources
-- ECR repository (Docker Container Registry)
-- ECS Cluster + Task definitions + ECS Service (Shiny app Webserver)
-- Lambda Function (Sonic Pyin)
-- Amazon S3
+## Provisioning Infrastructure on AWS
+- Create Security Groups
+- Create ECR repository "Elastic Container Registry" that helps to store and deploy container images.
+- Create ECS Cluster + Task definitions + ECS Service (Shiny app Webserver) for running containerized application.
+- Create Lambda Function (Sonic Pyin)
+- Create Amazon S3 buckets 
 - Amazon API Gateway ( used to invoke lambda function)
 
 

@@ -13,7 +13,3 @@ output "s3_source_destination" {
 output "aws_cognito_identity_pool" {
   value = aws_cognito_identity_pool.shiny_app.id
 }
-
-output "ecs_cluster" {
-  value = aws_ecs_cluster.this.name
-}
