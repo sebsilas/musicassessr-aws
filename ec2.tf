@@ -41,7 +41,7 @@ resource "aws_instance" "shiny_app" {
   ami              = data.aws_ami.ubuntu.id
   instance_type    = "t3.small"
   key_name         = aws_key_pair.deployer.key_name
-  security_groups  = aws_security_group.ec2_shiny.id
+  security_groups  = [aws_security_group.ec2_shiny.id]
   user_data_base64 = base64encode(local.user_data)
 
   root_block_device {
