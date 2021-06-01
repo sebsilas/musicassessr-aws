@@ -7,32 +7,64 @@ Deploying this solution wirh Terraform builds the following environment in the A
 
 ![AWS ](architecture.png)
 
-## Provisioning Infrastructure on AWS
-- Create Security Groups
-- Create ECR repository "Elastic Container Registry" that helps to store and deploy container images.
-- Create ECS Cluster + Task definitions + ECS Service (Shiny app Webserver) for running containerized application.
-- Create Lambda Function (Sonic Pyin)
-- Create Amazon S3 buckets 
-- Amazon API Gateway ( used to invoke lambda function)
-
-
-
-## How to use this? <a name="setup"></a>
-This project is based on Terraform.
-### Prerequisites
+## Prerequisites
 1. Terraform 0.15.x or later =>[Installation Guide](https://www.terraform.io/downloads.html)
 2. AWS CLI => [Installation Guide](https://aws.amazon.com/cli/)
 3. Docker
 4. jq => sudo apt install jq or yum install jq
 
 
-Once all prerequisites are installed, pull this repository and run following commands:
+# Components
+
+## Base 
+Creates the foundational infrastructure for the application's infrastructure(bolierplate). These Terraform files will create:
+
+- Two S3 Buckets (source and destination)
+- a Lamdda Function (Sonic Pyin) including its deployment process (building and pushing the conatiner image)
+- Amazon API Gateway ( used to invoke lambda function)
+- Coginito pool identiy pool (used to grant webserver permissions to read and upload on the newly created S3 buckets)
+
+## Usage
+
 ```
-$ make plan    // Creates an execution plan
-$ make apply // Executes the actions proposed in a Terraform plan
+# Move into the boilerplate directory
+$ cd boilerplate
+
+# Sets up Terraform to run
+$ make plan
+
+# Executes the Terraform run
+$ make apply
+```
+Typically, these Terraform files will only need to be run once, and then should only
+need changes very infrequently.This will output :
+
+| Name | Description |
+|------|-------------|
+| api_base_url | The AWS API Gateway endpoint URL  |
+| s3_source_bucket  | The S3 source bucket name  |
+| s3_destination_bucket | The S3 destination  bucket name  |
+| aws_cognito_identity_pool  | The Id of the identity pooll |
+
+## Deploying the shiny app
+
+- Create ECR repository "Elastic Container Registry" that helps to store and deploy container images.
+- Create ECS Cluster + Task definitions + ECS Service (Shiny app Webserver) for running containerized application.
+
+## Usage
+
+```
+# Move into the parent directory
+$ cd ..
+
+$ make plan
+
+$ make apply
 ```
 
 This will output "Shiny App URL" on the terminal, which can be used to access Shiny app Webserver.
+
+
 If you want to delete all these resources, run the following command:
 
 ```
