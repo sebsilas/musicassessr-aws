@@ -58,11 +58,11 @@ Packages and deploys the shiny app all along with a Load Balancer.
 - Configure Load Balancer Listener
 - Configure Load Balancer Target Groups
 - Create Security Groups
-- Create a self singed certificate (ssl)
+- Create a self singed certificate (ssl) on top of the load Balancer
 ### Usage
 
 ```
-# Move into the parent directory
+# Go back to the parent directory
 $ cd ..
 
 $ make plan
