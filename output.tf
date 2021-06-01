@@ -1,3 +1,3 @@
-output "ecs_cluster" {
-  value = aws_ecs_cluster.this.name
+output "Shiny_app_url" {
+  value = aws_lb.front-end.dns_name
 }
