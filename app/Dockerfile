@@ -1,4 +1,4 @@
-FROM rocker/shiny:4.0.3
+FROM rocker/shiny-verse:4.0.3
 # system libraries of general use
 ## install debian packages
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
