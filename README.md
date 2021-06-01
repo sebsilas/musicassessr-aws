@@ -24,7 +24,7 @@ Creates the foundational infrastructure for the application's infrastructure(bol
 - Amazon API Gateway ( used to invoke lambda function)
 - Coginito pool identiy pool (used to grant webserver permissions to read and upload on the newly created S3 buckets)
 
-## Usage
+### Usage
 
 ```
 # Move into the boilerplate directory
@@ -44,14 +44,22 @@ need changes very infrequently.This will output :
 | api_base_url | The AWS API Gateway endpoint URL  |
 | s3_source_bucket  | The S3 source bucket name  |
 | s3_destination_bucket | The S3 destination  bucket name  |
-| aws_cognito_identity_pool  | The Id of the identity pooll |
+| aws_cognito_identity_pool  | The Id of the identity pool |
 
 ## Deploying the shiny app
 
-- Create ECR repository "Elastic Container Registry" that helps to store and deploy container images.
-- Create ECS Cluster + Task definitions + ECS Service (Shiny app Webserver) for running containerized application.
+Packages and deploys the shiny app all along with a Load Balancer.
 
-## Usage
+- Create ECR repository "Elastic Container Registry" that helps to store and deploy container images.
+- Build and Push Docker Image to ECR.
+- Create ECS Cluster + Task definitions + ECS Service (Shiny app Webserver) for running containerized application.
+- Configure IAM Role for ECS Execution
+- Create Application Load Balancer
+- Configure Load Balancer Listener
+- Configure Load Balancer Target Groups
+- Create Security Groups
+- Create a self singed certificate (ssl)
+### Usage
 
 ```
 # Move into the parent directory
