@@ -29,7 +29,6 @@ plan: init  ## Show what terraform thinks it will do
 
 apply:  ## Have terraform do the things. 
 	@terraform apply -auto-approve
-	./s3.sh
 destroy:  ## Destroy the things
 	@terraform destroy -auto-approve
 
