@@ -124,11 +124,20 @@ play_melody_until_satisfied_loop <- function(melody = NULL, melody_no = "x", var
           print(number_attempts)
 
           if(is.null(melody)) {
-            melodies <- get_global("melodies", state)
-            melody <- melodies[melody_no, "abs_mel"]
-            answer_meta_data <- toJSON(melodies[melody_no, c("log.freq", "N", "tonalness", "tonal.clarity", "tonal.spike",
-                                         "mode", "step.cont.glob.var", "step.cont.glob.dir", "step.cont.loc.var",
-                                         "mean_int_size", "int_range", "dir_change", "mean_dir_change", "int_variety", "span")])
+
+            inst <- get_global("inst", state)
+            bottom_range <- get_global("bottom_range", state)
+            top_range <- get_global("top_range", state)
+
+            trial_chars <- get_global("trials", state)
+            trial_char <- get_trial_characteristics(trial_df = trial_chars, trial_no = melody_no)
+
+            melody <- sample_melody_in_key2(inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = trial_char$difficulty, length = trial_char$melody_length)
+
+
+            # answer_meta_data <- toJSON(melodies[melody_no, c("log.freq", "N", "tonalness", "tonal.clarity", "tonal.spike",
+            #                              "mode", "step.cont.glob.var", "step.cont.glob.dir", "step.cont.loc.var",
+            #                              "mean_int_size", "int_range", "dir_change", "mean_dir_change", "int_variety", "span")])
           }
 
           if(length(melody) == 1 & is.character(melody)) {

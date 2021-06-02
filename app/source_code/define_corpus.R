@@ -76,24 +76,30 @@ top_quantile <- function(corpus, quantile_cut = .95) {
 }
 
 
-subset_corpus <- function(corpus, N_range = NULL, quantile_cut = NULL, span_min = NULL, tonality = NULL) {
+subset_corpus <- function(corpus, length = NULL, quantile_cut = NULL, span_min = NULL, span_max = NULL, tonality = NULL) {
 
-  if (is.null(N_range)) {
-    N_range <- c(1, max(corpus$N))
+  if (is.null(length)) {
+    length <- c(1, max(corpus$N))
   }
-  else if (is.na(N_range[2])) { # the NULL gets coerced to NA
-    N_range[2] <- max(corpus$N)
+
+  else if (length(length) == 1) {
+    length <- c(length, length)
   }
-  else if(length(N_range) > 2) {
-    N_range <- c(N_range[1], N_range[length(N_range)])
+  else if (is.na(length[2])) { # the NULL gets coerced to NA
+    length[2] <- max(corpus$N)
+  }
+  else if(length(length) > 2) {
+    length <- c(length[1], length[length(length)])
   }
   else {
-    stop('unknown N_range format')
+    stop('unknown length format')
   }
 
 
   if (is.null(quantile_cut)) { quantile_cut <- min(corpus$log.freq) }
   if (is.null(span_min)) { span_min <- min(corpus$span) }
+  if (is.null(span_max)) { span_max <- max(corpus$span) }
+
 
   # corpus should be a df of the corpus read in e.g by read_rds
 
@@ -101,15 +107,22 @@ subset_corpus <- function(corpus, N_range = NULL, quantile_cut = NULL, span_min 
     corpus <- corpus %>% filter(mode == tonality)
   }
 
-  corpus %>% filter(log.freq > quantile_cut & N >= N_range[1] & N <= N_range[2] &
-                          span >= span_min)
+  corpus %>% filter(log.freq > quantile_cut & N >= length[1] & N <= length[2] &
+                          span >= span_min & span <= span_max)
 }
 
-#d_1 <- subset_corpus(corpus = WJD, N_range = 5:15, span_min = 12, tonality = "major")
+# d_1 <- subset_corpus(corpus = WJD, length = 5:15, span_min = 12, span_max = 30, tonality = "major")
+#
+# d_2 <- subset_corpus(corpus = WJD, length = 5:15, span_min = 12, tonality = "minor")
+#
+# d_3 <- subset_corpus(corpus = WJD, length = 5:15, span_min = 12, tonality = "minor")
+#
+# d_4 <- subset_corpus(corpus = WJD, length = c(3, NA))
+#
+# d_5 <- subset_corpus(corpus = WJD, length = 3)
 
-#d_2 <- subset_corpus(corpus = WJD, N_range = 5:15, span_min = 12, tonality = "minor")
+
 
 #subset_corpus(corpus = WJD)
 
-#sss <- subset_corpus(corpus = WJD, N_range = c(3, NULL))
 

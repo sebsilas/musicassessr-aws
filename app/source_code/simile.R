@@ -1,6 +1,179 @@
 library(hrep)
 library(tidyverse)
 
+# constants
+midi.gamut <- 21:108
+midi.gamut.min <- midi.gamut[1]
+midi.gamut.max <- midi.gamut[length(midi.gamut)]
+midi.to.pitch.classes.numeric.list <- as.list(rep(as.integer(1:12), 8)[midi.gamut])
+names(midi.to.pitch.classes.numeric.list) <- midi.gamut
+
+
+
+find.closest.value <- function(x, vector, return_value) {
+  # given a value, x, and a vector of values,
+  # return the index of the value in the vector, or the value itself, which is closest to x
+  # if return_value == TRUE, return the value, otherwise the index
+  res <- base::which.min(abs(vector - x))
+
+  res <- ifelse(return_value == TRUE, vector[res], res)
+
+  res
+}
+
+#find.closest.value(14, c(1, 6, 12, 28, 33), TRUE)
+
+get.all.octaves.in.gamut <- function(note, gamut_min = midi.gamut.min, gamut_max = midi.gamut.max) {
+
+  # given a note and a range/gamut, find all midi octaves of that note within the specified range/gamut
+  res <- c(note)
+
+  # first go down
+  while(note > gamut_min) {
+    note <- note - 12
+    res <- c(res, note)
+  }
+  # then go up
+  while(note < gamut_max) {
+    note <- note + 12
+    res <- c(res, note)
+  }
+  res <- res[!duplicated(res)]
+  res <- res[order(res)]
+  res
+}
+
+#as <- get.all.octaves.in.gamut(41, midi.gamut.min, midi.gamut.max)
+
+#as2 <- unlist(lapply(c(51, 39, 41, 43), function(x) get.all.octaves.in.gamut(x, midi.gamut.min, midi.gamut.max)))
+
+
+find.closest.stimuli.pitch.to.user.production.pitches <- function(stimuli_pitches, user_production_pitches, allOctaves = TRUE) {
+
+  # if allOctaves is true, get the possible pitches in all other octaves. this should therefore resolve issues
+  # where someone was presented stimuli out of their range and is penalised for it
+  if (allOctaves == TRUE) {
+    res <- sapply(user_production_pitches, find.closest.value, get.all.octaves.in.gamut(stimuli_pitches), return_value = TRUE)
+  } else {
+    res <- sapply(user_production_pitches, find.closest.value, stimuli_pitches, return_value = TRUE)
+  }
+  res
+}
+
+
+# constants
+
+pitch.classes <- c("A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab")
+midi.sci.notation.nos <- c(rep(0,3),rep(1,12),rep(2,12),rep(3,12),rep(4,12),rep(5,12),rep(6,12),rep(7,12), 8)
+scientific.pitch.classes <- paste0(pitch.classes, midi.sci.notation.nos)
+
+midi.to.pitch.classes.list <- as.list(rep(pitch.classes, 8)[c(1:88)])
+names(midi.to.pitch.classes.list) <- c(21:108)
+
+midi.to.pitch.classes.numeric.list <- as.list(rep(as.integer(1:12), 8)[c(1:88)])
+names(midi.to.pitch.classes.numeric.list) <- c(21:108)
+
+midi.to.sci.notation.list <- scientific.pitch.classes
+names(midi.to.sci.notation.list) <- c(21:108)
+
+
+pitch.class.to.midi.list <- list(c(21, 33, 45, 57, 69, 81, 93, 105),
+                                 c(22, 34, 46, 58, 70, 82, 94, 106),
+                                 c(23, 35, 47, 59, 71, 83, 95, 107),
+                                 c(24, 36, 48, 60, 72, 84, 96, 108),
+                                 c(25, 37, 49, 61, 73, 85, 97),
+                                 c(26, 38, 50, 62, 74, 86, 98),
+                                 c(27, 39, 51, 63, 75, 87, 99),
+                                 c(28, 40, 52, 64, 76, 88, 100),
+                                 c(29, 41, 53, 65, 77, 89, 101),
+                                 c(30, 42, 54, 66, 78, 90, 102),
+                                 c(31, 43, 55, 67, 79, 91, 103),
+                                 c(32, 44, 56, 68, 80, 92, 104)
+)
+
+names(pitch.class.to.midi.list) <- pitch.classes
+
+
+# functions
+
+pitch.class.to.numeric.pitch.class <- function(pitch_class) {
+  which(pitch.classes == pitch_class)
+}
+
+pitch.class.to.midi.notes <- function(pitch_class) {
+  pitch.class.to.midi.list[[pitch_class]]
+}
+
+midi.to.pitch.class <- function(midi_note) {
+
+  if (length(midi_note) == 1) {
+    pitch_class <- midi.to.pitch.classes.list[[as.character(midi_note)]]
+  }
+  else {
+    pitch_class <- unlist(lapply(midi_note, function(x) midi.to.pitch.classes.list[[as.character(x)]]))
+  }
+  pitch_class
+}
+
+
+midi.to.pitch.class.numeric <- function(midi_note) {
+
+  if (length(midi_note) == 1) {
+    pitch_class <- midi.to.pitch.classes.numeric.list[[as.character(midi_note)]]
+  }
+  else {
+    pitch_class <- unlist(lapply(midi_note, function(x) midi.to.pitch.classes.numeric.list[[as.character(x)]]))
+  }
+  pitch_class
+}
+
+
+midi.to.sci.notation <- function(midi_note) {
+
+  if (length(midi_note) == 1) {
+    pitch_class <- midi.to.sci.notation.list[[as.character(midi_note)]]
+  }
+  else {
+    pitch_class <- unlist(lapply(midi_note, function(x) midi.to.sci.notation.list[[as.character(x)]]))
+  }
+  pitch_class
+}
+
+
+# and some singing accuracy metrics on read in
+cents <- function(notea, noteb) {
+  # get the cents between two notes (as frequencies)
+  res <- 1200 * log2(noteb/notea)
+  res
+}
+
+vector.cents <- function(reference_note, vector_of_values) {
+  # given a vector of values and a target note, give the cents of the vector note relative to the target note
+  res <- vapply(vector_of_values, cents, "notea" = reference_note, FUN.VALUE = 100.001)
+  res
+}
+
+vector.cents.between.two.vectors <- function(vectora, vectorb) {
+  # for each note (as a freq) in a vector, get the cents difference of each note in vector A and vector B
+  res <- c()
+  for (n in 1:length(vectora)) {
+    cent_res <- cents(vectora[n], vectorb[n])
+    res <- c(res, cent_res)
+  }
+  res
+}
+
+
+
+vector.cents.first.note <- function(vector_of_values) {
+  # given a vector of frequencies, give the cents relative to the first note
+  res <- vapply(vector_of_values, cents, "notea" = vector_of_values[1], FUN.VALUE = 100.001)
+  res
+}
+
+
+### begin original
+
 messagef <- function(...) message(sprintf(...))
 #pc_labels <- c("C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "Bb", "B")
 pc_labels <- c("C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B")
@@ -59,7 +232,7 @@ get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner =
       map_dfr(s, function(x){
         #browser()
         pv <- pitch_vec[segmentation == x]
-        tibble(segment = x, key = get_implicit_harmonies(pv, NULL, only_winner = only_winner) %>%   pull(key))
+        tibble(segment = x, key = get_implicit_harmonies(pv, NULL, only_winner = only_winnter) %>%   pull(key))
       })
     )
 
@@ -153,7 +326,7 @@ get_transposition_hints <- function(pitch_vec1, pitch_vec2){
   unique(ret) %>% sort()
 
 }
-#finds transposition that maximaize raw edit distance of two pitch vectors
+#finds transposition that maximize raw edit distance of two pitch vectors
 #transposision in semitone of the *second* melody
 find_best_transposition <- function(pitch_vec1, pitch_vec2){
   trans_hints <- get_transposition_hints(pitch_vec1, pitch_vec2)
@@ -170,6 +343,7 @@ opti3 <- function(pitch_vec1, dur_vec1, pitch_vec2, dur_vec2, N = 3, use_bootstr
   v_ngrukkon <- ngrukkon(pitch_vec1, pitch_vec2, N = N)
   dur_vec1 <- classify_duration(dur_vec1)
   dur_vec2 <- classify_duration(dur_vec2)
+  v_rhythfuzz <- rhythfuzz(dur_vec1, dur_vec2)
 
   if(use_bootstrap){
     v_harmcore <- harmcore2(pitch_vec1, pitch_vec2)
@@ -179,9 +353,11 @@ opti3 <- function(pitch_vec1, dur_vec1, pitch_vec2, dur_vec2, N = 3, use_bootstr
 
   }
   opti3 <- 0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146
+
+  #messagef("ngrukkon = %.3f, rhythfuzz = %.3f, harmcor = %.3f, opti3 = %.3f",
+  #         v_ngrukkon, v_rhythfuzz, v_harmcore, opti3)
+
   opti3 <- max(min(opti3, 1), 0)
-  messagef("ngrukkon = %.3f, rhythfuzz = %.3f, harmcor = %.3f, opti3 = %.3f",
-           v_ngrukkon, v_rhythfuzz, v_harmcore, opti3)
 
 }
 
@@ -190,30 +366,17 @@ read_melody <- function(fname){
   melody <-
     read.csv(fname, header = F) %>%
     as_tibble() %>%
-    rename(onset = V1, freq = V2, dur = V3) %>%
+    rename(onset = V1, freq = V3, dur = V2) %>%
+    ## NB! switched columns in above line for sonic annotator PYIN! if output is from Tony, try rename(onset = V1, freq = V2, dur = V3)
     mutate(pitch = round(freq_to_midi(freq)),
-           ioi = c(NA, diff(onset)), # <- SEB EDIT. ORIGINAL/ALTERNATIVE: ioi = c(diff(onset), NA),
-           ioi_class = classify_duration(ioi))
-  #browser()
-  if(any(is.na(melody$pitch)) || any(is.infinite(melody$pitch))){
-    stop("Warning: Melody (%s) contains invalid pitches", fname)
-  }
-  if(any(melody$ioi[!is.na(melody$ioi)] < .01)){
-    stop("Warnings: Melody (%s) contains IOIs less than 1 ms, possibly no note track", fname)
-  }
-  melody
-}
-
-
-read_melody_text <- function(text){
-  print('read_melody_text')
-  print(text)
-  melody <-
-    read.csv(text = text, header = F) %>%
-    as_tibble() %>%
-    rename(onset = V1, dur = V2, freq = V3) %>% # NB this is different for sonic-annotator (compared to Tony)
-    mutate(pitch = round(freq_to_midi(freq)),
-           ioi = c(NA, diff(onset)), # <- SEB EDIT. ORIGINAL/ALTERNATIVE: ioi = c(diff(onset), NA),
+           #cents_from_first_note = vector.cents.first.note(round(freq_to_midi(freq))),
+           cents_deviation_from_nearest_midi_pitch = vector.cents.between.two.vectors(round(midi_to_freq(freq_to_midi(freq))), freq),
+           # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
+           pitch_class = midi.to.pitch.class(round(freq_to_midi(freq))),
+           pitch_class_numeric = midi.to.pitch.class.numeric(round(freq_to_midi(freq))),
+           sci_notation = midi.to.sci.notation(round(freq_to_midi(freq))),
+           interval = c(NA, diff(pitch)),
+           ioi = c(NA, diff(onset)), ## <= seb edit. original => ioi = c(diff(onset), NA)
            ioi_class = classify_duration(ioi))
   #browser()
   if(any(is.na(melody$pitch)) || any(is.infinite(melody$pitch))){

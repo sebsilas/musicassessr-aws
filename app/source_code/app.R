@@ -77,9 +77,7 @@ PBET_example_protocol <- function(page_type) {
                                      page_type = page_type,
                                      get_answer = get_answer_null),
 
-    one_button_page(body = div(tags$p("Great, well done! Now you should be ready for the real test."), tags$p("Please ask the experimenter before proceeding, if you have any questions."))),
-
-    check_melodies_built()
+    one_button_page(body = div(tags$p("Great, well done! Now you should be ready for the real test."), tags$p("Please ask the experimenter before proceeding, if you have any questions.")))
 
   )
 
@@ -147,7 +145,8 @@ PBET <- function(n_items) {
 
 
     # build range based on pages
-    build_test_items_from_user_range(), # it has default parameters
+
+    items_characteristics_sampler_block(),
 
     # instructions
     PBET_instructions(),

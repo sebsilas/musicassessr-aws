@@ -21,7 +21,6 @@ library(stringi)
 #                    'htmltools', 'psychTestR', 'rsconnect', 'readxl',
 #                    'aws.s3', 'glue', 'psyquest', 'promises', 'future', 'httr', 'async', 'stringi'))
 
-
 # includes
 source('constants.R')
 source("simile.R")

@@ -168,7 +168,6 @@ item_sampler <- function(item_bank, no_items) {
 }
 
 
-
 sample_n_melodies_which_fit_in_range <- function(corpus, n_difficulty = list("easy" = 5, "hard" = 5), n_range = NULL,
                                                  bottom_range = 48, top_range = 79, inst) {
 
@@ -198,7 +197,7 @@ sample_n_melodies_which_fit_in_range <- function(corpus, n_difficulty = list("ea
       sampled_melody <- sampled[, "melody"]
       sampled_melody_N <- sampled[, "N"]
 
-      keys <- given_range_what_keys_can_melody_go_in(melody = sampled_melody,
+      keys <- given_range_what_keys_can_melody_go_in2(melody = sampled_melody,
                                                      bottom_range = bottom_range,
                                                      top_range = top_range, inst = inst)
       if(nrow(keys) != 0) {
@@ -236,6 +235,147 @@ sample_n_melodies_which_fit_in_range <- function(corpus, n_difficulty = list("ea
 
 }
 
+
+
+
+sample_n_melodies_which_fit_in_range2 <- function(corpus, n_difficulty = list("easy" = 5, "hard" = 5), n_range = NULL,
+                                                 bottom_range = 48, top_range = 79, inst) {
+
+  req_n_easy <- n_difficulty$easy
+  req_n_hard <- n_difficulty$hard
+  req_n <- req_n_easy + req_n_hard
+
+  if(is.null(n_range)) {
+    n_range <- min(corpus$N):max(corpus$N)
+  }
+
+  # instantiate counters
+  n_easy <- 0
+  n_hard <- 0
+
+  ncols <- length(names(corpus)) + 3 # i.e start_note, key,  difficulty
+
+  res <- setNames(data.frame(matrix(ncol = ncols, nrow = req_n)), c("start_note", "key", "difficulty", names(corpus)))
+
+  easy_keys <- easy_keys_for_inst(inst)$key
+  hard_keys <- hard_keys_for_inst(inst)$key
+
+  user_range <- bottom_range:top_range
+
+  while(req_n_easy != n_easy | req_n_hard != n_hard) {
+
+    random_user_range_order <- sample(1:length(user_range), length(user_range))
+
+    lapply(n_range, function(n) {
+      corpus_without_replacement <- corpus %>% filter(N == n)
+      sampled <- sample_from_df(corpus_without_replacement, 1)
+      sampled_melody <- sampled[, "melody"]
+
+          for(i in random_user_range_order) {
+            start_note <- user_range[i]
+            abs_mel <- rel_to_abs_mel(str.mel.to.vector(sampled_melody, ","), start_note)
+            key <- get_implicit_harmonies(abs_mel)$key
+
+            # print(res$melody)
+            # print(is.na(res$melody))
+            # print('hils')
+            # print(which(is.na(res$melody)))
+            # print(length(which(is.na(res$melody))))
+            # print('BDAY')
+            # print(min(which(is.na(res$melody))))
+
+            NAindex <- min(which(is.na(res$melody)))
+
+            if(length(which(is.na(res$melody))) == 0) {
+              break
+            }
+
+            else {
+              print(key)
+              print('in hard?')
+              print(key %in% hard_keys)
+              print('in easy?')
+              print(key %in% easy_keys)
+              if(key %in% hard_keys & req_n_hard != n_hard) {
+                print('add hard')
+                res[NAindex, "melody"] <<- paste0(abs_mel, collapse = ",")
+                res[NAindex, "key"] <<- key
+                res[NAindex, "difficulty"] <<- key_difficulty(key, inst)
+              }
+
+              else if(key %in% easy_keys | req_n_easy != n_easy) {
+                print('add easy')
+                res[NAindex, "melody"] <<- paste0(abs_mel, collapse = ",")
+                res[NAindex, "key"] <<- key
+                res[NAindex, "difficulty"] <<- key_difficulty(key, inst)
+              }
+              else {
+                break
+              }
+            }
+          }
+
+      count <- res %>% count(difficulty)
+      n_easy <- count %>% filter(difficulty == "easy") %>% select (n)
+      n_hard <- count %>% filter(difficulty == "hard") %>% select (n)
+      n_easy <- as.integer(n_easy)
+      n_hard <- as.integer(n_hard)
+
+      print('n_easy')
+      print(n_easy)
+      print('n_hard')
+      print(n_hard)
+      })
+
+  }
+
+  #res <- res[order(res$N), ]
+  #rownames(res) <- 1:nrow(res)
+  res
+
+}
+
+
+###
+
+# tests
+
+# ressss <- sample_n_melodies_which_fit_in_range2(corpus = WJD,
+#                                                n_range = 3:15,
+#                                                n_difficulty = list("easy" = 10, "hard" = 10),
+#                                                bottom_range = 48,
+#                                                top_range = 79,
+#                                                inst = "Piano")
+#
+#
+# ressss2 <- sample_n_melodies_which_fit_in_range2(corpus = WJD, n_range = 3:15,
+#                                                 n_difficulty = list("easy" = 10, "hard" = 10),
+#                                                 bottom_range = 48,
+#                                                 top_range = 79,
+#                                                 inst = "Tenor Saxophone")
+#
+#
+# ressss3 <- sample_n_melodies_which_fit_in_range2(corpus = WJD, n_range = 3:15,
+#                                                 n_difficulty = list("easy" = 10, "hard" = 10),
+#                                                 bottom_range = 48,
+#                                                 top_range = 79,
+#                                                 inst = "Alto Saxophone")
+#
+#
+#
+# ressss4 <- sample_n_melodies_which_fit_in_range2(corpus = WJD, n_range = 3:15,
+#                                                  n_difficulty = list("easy" = 10, "hard" = 10),
+#                                                  bottom_range = 48,
+#                                                  top_range = 79,
+#                                                  inst = "Trumpet")
+#
+#
+
+
+
+
+###
+
 build_test_items_from_user_range <- function(corpus = WJD, n_range = 3:15, n = 20, n_difficulty = list("easy" = 10, "hard" = 10), top_range = NULL, bottom_range = NULL, inst = NULL) {
 
   if(n != sum(as.vector(unlist(list("easy" = 10, "hard" = 10))))) {
@@ -269,7 +409,7 @@ build_test_items_from_user_range <- function(corpus = WJD, n_range = 3:15, n = 2
 
 
     promise_melody <- future({
-      sample_n_melodies_which_fit_in_range(corpus = corpus,
+      sample_n_melodies_which_fit_in_range2(corpus = corpus,
                                            n_range = n_range,
                                            n_difficulty = n_difficulty,
                                            bottom_range = bottom_range,
@@ -290,6 +430,50 @@ build_test_items_from_user_range <- function(corpus = WJD, n_range = 3:15, n = 2
 
 
 
+item_characteristics_sampler <- function(length = 3:15, difficulty = list("easy" = 10, "hard" = 10)) {
+  # given a range of stimuli lengths and a number of difficulties, produce the test parameters
+  no_items <- sum(unlist(difficulty))
+
+  # what values are there?
+  no_of_Ns <- length(length)
+  # given the no. of items, how many of each N will we need? let's count
+
+  idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
+
+  count <- 1
+  N_list <- c()
+
+  while(count < no_items+1) {
+    N_list <- c(N_list, length[idxes[count]])
+    count <- count + 1
+  }
+
+  data.frame(trial_no = 1:no_items,
+            melody_length = N_list[order(N_list)],
+             difficulty = c(rep("easy", difficulty$easy),
+                            rep("hard", difficulty$hard))
+             )
+
+}
+
+items_characteristics_sampler_block <- function() {
+  code_block(function(state, ...) {
+    set_global("trials", item_characteristics_sampler(), state)
+  })
+}
+
+get_trial_characteristics <- function(trial_df, trial_no) {
+  #print(trial_df)
+  # given the trial number, return what info is needed for the sampler
+  list("melody_length" = trial_df[trial_df$trial_no == trial_no, "melody_length"],
+       "difficulty" = trial_df[trial_df$trial_no == trial_no, "difficulty"]
+  )
+}
+
+#pra <- item_characteristics_sampler()
+
+
+#get_trial_characteristics(trial_df = pra, trial_no = 20)
 
 # tests
 
