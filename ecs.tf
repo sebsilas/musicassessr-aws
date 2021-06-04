@@ -40,11 +40,13 @@ resource "aws_ecs_service" "this" {
   name            = "${var.project_name}-${local.stage}_service"
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.this.arn
+  launch_type     = "FARGATE"
   desired_count   = 1
 
   network_configuration {
     subnets          = [local.subnets_ids[0]]
     security_groups  = [aws_security_group.ecs.id]
+    assign_public_ip = true
   }
 
   load_balancer {

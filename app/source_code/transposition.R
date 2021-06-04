@@ -1,4 +1,3 @@
-library(profvis)
 
 key_rankings_for_inst <- function(inst, remove_atonal = TRUE) {
 
@@ -301,8 +300,8 @@ produce_stimuli_in_range_and_key <- function(rel_melody, bottom_range = 21, top_
 
 
 
-sum(unlist(lapply(list(ra, ra3, ra4, ra5, ra6, ra7), function(x) x[3])))
-sum(unlist(lapply(list(ra.2, ra3.2, ra4.2, ra5.2, ra6.2, ra7.2), function(x) x[3])))
+#sum(unlist(lapply(list(ra, ra3, ra4, ra5, ra6, ra7), function(x) x[3])))
+#sum(unlist(lapply(list(ra.2, ra3.2, ra4.2, ra5.2, ra6.2, ra7.2), function(x) x[3])))
 
 
 
