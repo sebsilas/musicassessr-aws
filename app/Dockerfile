@@ -17,9 +17,9 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get clean
 
-COPY /source_code ./app
+COPY /magmaGold/R ./app
 
-COPY /source_code/renv.lock ./renv.lock
+COPY /magmaGold/R/renv.lock ./renv.lock
 
 RUN Rscript -e 'install.packages("renv")'
 RUN Rscript -e 'renv::restore()'

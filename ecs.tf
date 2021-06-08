@@ -1,3 +1,28 @@
+data "aws_ami" "ecs_ami" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn-ami-*-amazon-ecs-optimized"]
+  }
+  owners = ["amazon"]
+}
+
+
+resource "aws_instance" "shiny_app" {
+  ami                    = data.aws_ami.ecs_ami.id
+  iam_instance_profile   = aws_iam_instance_profile.ecs_agent.name
+  subnet_id=module.vpc.public_subnets[0]
+  instance_type          = "t3.small"
+  key_name               = "shiny"
+  vpc_security_group_ids = [aws_security_group.ec2.id]
+  user_data              = "#!/bin/bash\necho ECS_CLUSTER=${aws_ecs_cluster.this.name} >> etc/ecs/ecs.config"
+  root_block_device {
+    volume_size = 30
+  }
+}
+
+
 data "template_file" "container_definitions" {
   template = file("${path.module}/task-definitions/${var.container_definitions_file}")
 
@@ -20,7 +45,7 @@ resource "aws_ecs_cluster" "this" {
 resource "aws_ecs_task_definition" "this" {
   family                   = "${var.project_name}-${local.stage}_family"
   container_definitions    = data.template_file.container_definitions.rendered
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = ["EC2"]
   network_mode             = "awsvpc"
   cpu                      = var.aws_ecs_task_definition_params["cpu"]
   memory                   = var.aws_ecs_task_definition_params["memory"]
@@ -40,13 +65,11 @@ resource "aws_ecs_service" "this" {
   name            = "${var.project_name}-${local.stage}_service"
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.this.arn
-  launch_type     = "FARGATE"
   desired_count   = 1
 
   network_configuration {
-    subnets          = [local.subnets_ids[0]]
-    security_groups  = [aws_security_group.ecs.id]
-    assign_public_ip = true
+    subnets         = module.vpc.private_subnets
+    security_groups = [aws_security_group.ecs.id]
   }
 
   load_balancer {
@@ -61,6 +84,7 @@ resource "aws_ecs_service" "this" {
 
   tags = local.tags
 }
+
 
 resource "aws_cloudwatch_log_group" "ecs-log" {
   name = "awslogs-ecs-logs"

@@ -22,7 +22,7 @@ resource "aws_s3_bucket" "source_bucket" {
 
   cors_rule {
     allowed_headers = ["*"]
-    allowed_methods = ["GET","HEAD","POST","PUT"]
+    allowed_methods = ["GET", "HEAD", "POST", "PUT"]
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
@@ -42,10 +42,10 @@ resource "aws_s3_bucket" "destination_bucket" {
 
   cors_rule {
     allowed_headers = ["*"]
-    allowed_methods = ["GET","HEAD","POST","PUT"]
+    allowed_methods = ["GET", "HEAD", "POST", "PUT"]
     allowed_origins = ["*"]
     max_age_seconds = 3000
   }
-  
+
   tags = local.tags
 }

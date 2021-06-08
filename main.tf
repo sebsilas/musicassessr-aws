@@ -16,6 +16,10 @@ data "aws_vpc" "default" {
 }
 
 
+data "aws_availability_zones" "azs" {
+}
+
+
 data "aws_subnet_ids" "current" {
   vpc_id = data.aws_vpc.default.id
 }
@@ -37,3 +41,18 @@ resource "null_resource" "shiny_app_image" {
   }
 }
 
+
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "vpc"
+  cidr = "10.0.0.0/16"
+
+  azs             = slice(data.aws_availability_zones.azs.names, 0, 2)
+  private_subnets = ["10.0.0.0/24", "10.0.1.0/24"]
+  public_subnets  = ["10.0.8.0/24", "10.0.9.0/24"]
+
+  enable_nat_gateway = true
+
+  tags = local.tags
+}

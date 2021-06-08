@@ -1,6 +1,6 @@
 resource "aws_lb" "front-end" {
   name               = "${var.project_name}-alb-front-end"
-  subnets            = data.aws_subnet_ids.current.ids
+  subnets            = module.vpc.public_subnets
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
 
@@ -25,7 +25,7 @@ resource "aws_lb_target_group" "ecs" {
   name        = "${var.project_name}-front-end-target-gp"
   port        = 80
   protocol    = "HTTP"
-  vpc_id      = data.aws_vpc.default.id
+  vpc_id      = module.vpc.vpc_id
   target_type = "ip"
 
   health_check {
