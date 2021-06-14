@@ -1,3 +1,3 @@
 output "Shiny_app_url" {
-  value = aws_lb.front-end.dns_name
+  value = "https://${aws_instance.shiny_app.public_ip}"
 }

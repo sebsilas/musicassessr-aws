@@ -31,5 +31,5 @@ apply:  ## Have terraform do the things.
 	@terraform apply -auto-approve
 destroy:  ## Destroy the things
 	@terraform destroy -auto-approve
-
+	rm -rf *.pem
 
