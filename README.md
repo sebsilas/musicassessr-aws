@@ -72,5 +72,7 @@ If you want to delete all these resources, run the following command:
 
 ```
 $ make destroy
+$ cd boilerplate
+$ make destroy
 ```
 
