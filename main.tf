@@ -49,7 +49,7 @@ resource "aws_instance" "shiny_app" {
   vpc_security_group_ids = [aws_security_group.ec2.id]
   user_data              = "#!/bin/bash\n sudo systemctl restart shiny-server"
   root_block_device {
-    volume_size = 30
+    volume_size = 40
   }
 }
 
