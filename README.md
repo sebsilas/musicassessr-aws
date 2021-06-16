@@ -23,18 +23,6 @@ Creates the foundational infrastructure for the application's infrastructure(bol
 - Amazon API Gateway ( used to invoke lambda function)
 - Coginito pool identiy pool (used to grant webserver permissions to read and upload on the newly created S3 buckets)
 
-### Usage
-
-```
-# Move into the boilerplate directory
-$ cd boilerplate
-
-# Sets up Terraform to run
-$ make plan
-
-# Executes the Terraform run
-$ make apply
-```
 Typically, these Terraform files will only need to be run once, and then should only
 need changes very infrequently.This will output :
 
@@ -47,33 +35,38 @@ need changes very infrequently.This will output :
 
 ## Deploying the shiny app
 
-Packages and deploys the shiny app all along with a Load Balancer.
+Packages and deploys the shiny app.
 
 - Create VPC 
 - Create Security Groups
 - Launch an EC2 instance from a custom Amazon Machine Image (AMI)
 
 
-### Usage
+This will output "Shiny App URL" on the terminal, which can be used to access Shiny app Webserver.
 
-#### Configure environment variables:
+# Usage
 
 ```
+
+# Configure environment variables:
 $ export AWS_ACCESS_KEY_ID=put_your_access_key_id_here
 $ export AWS_SECRET_ACCESS_KEY=put_your_secret_access_key_here
-```
-#### Deployment:
-```
+
+# Move into the boilerplate directory
+$ cd boilerplate
+
+$ make plan
+
+$ make apply
+
 # Go back to the parent directory
 $ cd ..
 
 $ make plan
 
 $ make apply
+
 ```
-
-This will output "Shiny App URL" on the terminal, which can be used to access Shiny app Webserver.
-
 
 If you want to delete all these resources, run the following command:
 

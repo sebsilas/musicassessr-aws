@@ -42,7 +42,7 @@ module "vpc" {
 }
 
 resource "aws_instance" "shiny_app" {
-  ami                    = "ami-01435035d2ff99756"
+  ami                    = "ami-04ca3c46d90ed5877"
   subnet_id              = module.vpc.public_subnets[0]
   instance_type          = "t3.medium"
   key_name               = aws_key_pair.this.key_name
