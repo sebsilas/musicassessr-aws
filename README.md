@@ -11,7 +11,6 @@ Deploying this solution wirh Terraform builds the following environment in the A
 1. Terraform 0.15.x or later =>[Installation Guide](https://www.terraform.io/downloads.html)
 2. AWS CLI => [Installation Guide](https://aws.amazon.com/cli/)
 3. Docker
-4. jq => sudo apt install jq or yum install jq
 
 
 # Components
@@ -50,17 +49,20 @@ need changes very infrequently.This will output :
 
 Packages and deploys the shiny app all along with a Load Balancer.
 
-- Create ECR repository "Elastic Container Registry" that helps to store and deploy container images.
-- Build and Push Docker Image to ECR.
-- Create ECS Cluster + Task definitions + ECS Service (Shiny app Webserver) for running containerized application.
-- Configure IAM Role for ECS Execution
-- Create Application Load Balancer
-- Configure Load Balancer Listener
-- Configure Load Balancer Target Groups
+- Create VPC 
 - Create Security Groups
-- Create a self singed certificate (ssl) on top of the load Balancer
+- Launch an EC2 instance from a custom Amazon Machine Image (AMI)
+
+
 ### Usage
 
+#### Configure environment variables:
+
+```
+$ export AWS_ACCESS_KEY_ID=put_your_access_key_id_here
+$ export AWS_SECRET_ACCESS_KEY=put_your_secret_access_key_here
+```
+#### Deployment:
 ```
 # Go back to the parent directory
 $ cd ..
