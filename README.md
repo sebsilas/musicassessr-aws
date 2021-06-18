@@ -75,4 +75,21 @@ $ make destroy
 $ cd boilerplate
 $ make destroy
 ```
+# Deploying Shiny apps to the EC2
+
+```
+# upload your shiny app files to EC2
+$ scp -i shiny-ec2-key.pem  -r <local-shiny-app-folder-path>  ubuntu@<ip>:/home/ubuntu
+# connect to your instance using SSH
+$ ssh -i shiny-ec2-key.pem ubuntu@<ip>
+# move your files from /home/ubuntu/ to /srv/shiny-server/ (this is where the Shiny Server is located)
+$ mv /home/ubuntu/<shiny-app-folder> /srv/shiny-server
+# install all the packages for your application
+$ sudo su - \
+-c "R -e \"install.packages('package', repos='https://cran.rstudio.com/')\""
+$ sudo chown -R shiny /srv/shiny-server/<shiny-app-folder>
+$ sudo  systemctl restart shiny-server.service
+```
+# Setting up SSL 
+[Installation Guide](https://github.com/mcetn/shiny-app-aws/blob/main/ssl.md)
 
