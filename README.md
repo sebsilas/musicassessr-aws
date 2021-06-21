@@ -51,12 +51,16 @@ This will output "Shiny App URL" in the terminal, which can be used to access Sh
 # Configure environment variables (requried for both):
 $ export AWS_ACCESS_KEY_ID=put_your_access_key_id_here
 $ export AWS_SECRET_ACCESS_KEY=put_your_secret_access_key_here
+
+
 # step 1 (Base)
 # Move into the boilerplate directory
 $ cd boilerplate
 $ make plan
 
 $ make apply
+
+
 # step 2 (Deploying the Shiny app)
 # Go back to the parent directory
 $ cd ..
