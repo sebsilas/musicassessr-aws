@@ -2,9 +2,11 @@
 
 This Terraform project creates almost all required Amazon Web Server (AWS) resources, builds and packages the required Lambda dependencies and dockerizes a Shiny app which uses [musicassessr](https://github.com/syntheso/musicassessr) functionality.
 
-There are 3 main steps:
+There are 3 main steps, each of which have several substeps:
 
-1) 
+1) Setup the AWS architecture
+2) Update or deploy a musicassessr/Shiny apps to the created EC2 server
+3) Setting up SSL. This needs to be done to remove security warnings, which are otherwise produced by using functionality which requests to use a user's microphone.
 
 
 ## Prerequisites
@@ -16,10 +18,10 @@ There are 3 main steps:
 # Usage
 
 ## 1) Setup AWS architecture
-For more information about the setup, please see [Architecture Overview]().
+For more information about the setup, please see [Architecture Overview](https://github.com/mcetn/shiny-app-aws/blob/main/architecture_overview.md).
 
 1) If you do not have one already, [create an AWS account](https://aws.amazon.com/resources/create-account/).
-2) [Get your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/getting-your-credentials.html). 
+2) [Get your AWS access key(AWS_ACCESS_KEY_ID) and secret access keys(AWS_SECRET_ACCESS_KEY)](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/getting-your-credentials.html). 
 3) Clone this directory locally to your computer then enter the commands below, replacing with your credentials as indicated.
 
 ```
