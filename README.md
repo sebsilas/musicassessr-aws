@@ -6,7 +6,7 @@ There are 3 main steps, each of which have several substeps. You should only nee
 
 1) Setup the AWS architecture (for recording and processing audio in the cloud)
 2) Update or deploy `musicassessr`/Shiny apps to the created EC2 server (to run your `musicassessr` functionality i.e., collect data for a psychology test)
-3) Setup up SSL. This is required to remove browser security warnings, which are otherwise produced by using functionality which requests to use a user's microphone.
+3) Setup up SSL. This is required to remove browser security warnings, which are otherwise produced by using functionality which requests to use a user's microphone. NB, you will need your own registered domain name for this step.
 
 
 ## Prerequisites
