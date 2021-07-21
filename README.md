@@ -2,7 +2,7 @@
 
 This Terraform project creates almost all required Amazon Web Server (AWS) resources, builds and packages the required Lambda dependencies and dockerizes a Shiny app which uses [musicassessr](https://github.com/syntheso/musicassessr) functionality.
 
-There are 3 main steps, each of which have several substeps:
+There are 3 main steps, each of which have several substeps. You should only need to do most of this once to make use of the `musicassessr` functionality:
 
 1) Setup the AWS architecture
 2) Update or deploy a musicassessr/Shiny apps to the created EC2 server
