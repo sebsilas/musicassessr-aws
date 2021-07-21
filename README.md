@@ -1,6 +1,9 @@
 # Overview 
 
-This Terraform project creates almost all required AWS resources as well as building and packaging the required Lambda dependencies and dockerizing the Shiny app.
+This Terraform project creates almost all required Amazon Web Server (AWS) resources, builds and packages the required Lambda dependencies and dockerizes a Shiny app which uses [musicassessr](https://github.com/syntheso/musicassessr) functionality.
+
+
+
 
 # Architecture Overview
 Deploying this solution wirh Terraform builds the following environment in the AWS Cloud:
@@ -46,9 +49,13 @@ This will output "Shiny App URL" in the terminal, which can be used to access Sh
 
 # Usage
 
+1) If you do not have one already, [create an AWS account](https://aws.amazon.com/resources/create-account/).
+2) [Get your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/getting-your-credentials.html). 
+3) Clone this directory locally to your computer then enter the commands below, replacing with your credentials as indicated.
+
 ```
 
-# Configure environment variables (requried for both):
+# Configure environment variables (required for both):
 $ export AWS_ACCESS_KEY_ID=put_your_access_key_id_here
 $ export AWS_SECRET_ACCESS_KEY=put_your_secret_access_key_here
 
@@ -95,4 +102,6 @@ $ sudo  systemctl restart shiny-server.service
 ```
 # Setting up SSL 
 [Installation Guide](https://github.com/mcetn/shiny-app-aws/blob/main/ssl.md)
+
+
 
