@@ -1,6 +1,6 @@
 # Overview 
 
-This repository hosts a Terraform project which creates almost all the required Amazon Web Server (AWS) resources, builds and packages the required Lambda dependencies and dockerizes a Shiny app which uses [musicassessr](https://github.com/syntheso/musicassessr) functionality.
+This repository hosts a Terraform project which creates almost all the required dependencies to support [`musicassessr`](https://github.com/syntheso/musicassessr). More specifically, it creates the relevant Amazon Web Server (AWS) resources, builds and packages the required Lambda dependencies and dockerizes a Shiny app which uses `musicassessr` functionality.
 
 There are 3 main steps, each of which have several substeps. You should only need to do most of this once to make use of the `musicassessr` functionality:
 
