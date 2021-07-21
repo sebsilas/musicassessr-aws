@@ -13,7 +13,7 @@ Deploying this solution wirh Terraform builds the following environment in the A
 ## Prerequisites
 1. Terraform 0.15.x or later =>[Installation Guide](https://www.terraform.io/downloads.html)
 2. AWS CLI => [Installation Guide](https://aws.amazon.com/cli/)
-3. Docker
+3. Docker => [Install](https://www.docker.com/)
 
 
 # Components
