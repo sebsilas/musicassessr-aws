@@ -1,12 +1,12 @@
 # Overview 
 
-This Terraform project creates almost all required Amazon Web Server (AWS) resources, builds and packages the required Lambda dependencies and dockerizes a Shiny app which uses [musicassessr](https://github.com/syntheso/musicassessr) functionality.
+This repository hosts a Terraform project which creates almost all the required Amazon Web Server (AWS) resources, builds and packages the required Lambda dependencies and dockerizes a Shiny app which uses [musicassessr](https://github.com/syntheso/musicassessr) functionality.
 
 There are 3 main steps, each of which have several substeps. You should only need to do most of this once to make use of the `musicassessr` functionality:
 
-1) Setup the AWS architecture
-2) Update or deploy a musicassessr/Shiny apps to the created EC2 server
-3) Setting up SSL. This needs to be done to remove security warnings, which are otherwise produced by using functionality which requests to use a user's microphone.
+1) Setup the AWS architecture (for recording and processing audio in the cloud)
+2) Update or deploy `musicassessr`/Shiny apps to the created EC2 server (to run your `musicassessr` functionality i.e., collect data for a psychology test)
+3) Setup up SSL. This is required to remove browser security warnings, which are otherwise produced by using functionality which requests to use a user's microphone.
 
 
 ## Prerequisites
@@ -18,7 +18,7 @@ There are 3 main steps, each of which have several substeps. You should only nee
 # Usage
 
 ## 1) Setup AWS architecture
-For more information about the setup, please see [Architecture Overview](https://github.com/mcetn/shiny-app-aws/blob/main/architecture_overview.md).
+For more information about the AWS architecture setup, please see [Architecture Overview](https://github.com/mcetn/shiny-app-aws/blob/main/architecture_overview.md).
 
 a) If you do not have one already, [create an AWS account](https://aws.amazon.com/resources/create-account/).
 b) Get your AWS access key(AWS_ACCESS_KEY_ID) and secret access keys(AWS_SECRET_ACCESS_KEY) => [How To](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/getting-your-credentials.html). 
@@ -56,7 +56,7 @@ $ make destroy
 $ cd boilerplate
 $ make destroy
 ```
-## 2) Update or deploy a musicassessr/Shiny apps to the EC2
+## 2) Update or deploy `musicassessr`/Shiny apps to the EC2
 
 ```
 # upload your shiny app files to EC2
@@ -67,7 +67,7 @@ $ ssh -i shiny-ec2-key.pem ubuntu@<ip>
 $ mv /home/ubuntu/<shiny-app-folder> /srv/shiny-server
 # install all the packages for your application
 $ sudo su - \
--c "R -e \"install.packages('package', repos='https://cran.rstudio.com/')\""
+-c "R -e \"install.packages(musicassessr, repos='https://cran.rstudio.com/')\""
 $ sudo chown -R shiny /srv/shiny-server/<shiny-app-folder>
 $ sudo  systemctl restart shiny-server.service
 ```
