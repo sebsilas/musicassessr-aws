@@ -5,7 +5,7 @@ Deploying this solution wirh Terraform builds the following environment in the A
 
 # Components
 
-## Step A Base 
+## Step A: Base 
 Creates the foundational infrastructure for the application's infrastructure (boilerplate). These Terraform files will create:
 
 - Two S3 Buckets (source and destination)
@@ -23,7 +23,7 @@ need changes very infrequently. This will output :
 | s3_destination_bucket | The S3 destination  bucket name  |
 | aws_cognito_identity_pool  | The ID of the Identity Pool |
 
-## Step B Deploying the Shiny app
+## Step B: Deploying the Shiny app
 
 Packages and deploys the Shiny App.
 
