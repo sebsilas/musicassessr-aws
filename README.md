@@ -71,7 +71,7 @@ $ sudo su - \
 $ sudo chown -R shiny /srv/shiny-server/<shiny-app-folder>
 $ sudo  systemctl restart shiny-server.service
 ```
-# 3) Setting up SSL 
+## 3) Setting up SSL 
 [Installation Guide](https://github.com/mcetn/shiny-app-aws/blob/main/ssl.md)
 
 
