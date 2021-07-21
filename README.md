@@ -21,7 +21,7 @@ There are 3 main steps, each of which have several substeps. You should only nee
 For more information about the setup, please see [Architecture Overview](https://github.com/mcetn/shiny-app-aws/blob/main/architecture_overview.md).
 
 1) If you do not have one already, [create an AWS account](https://aws.amazon.com/resources/create-account/).
-2) [Get your AWS access key(AWS_ACCESS_KEY_ID) and secret access keys(AWS_SECRET_ACCESS_KEY)](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/getting-your-credentials.html). 
+2) Get your AWS access key(AWS_ACCESS_KEY_ID) and secret access keys(AWS_SECRET_ACCESS_KEY) => [How To](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/getting-your-credentials.html). 
 3) Clone this directory locally to your computer then enter the commands below, replacing with your credentials as indicated.
 
 ```
