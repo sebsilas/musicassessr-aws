@@ -23,6 +23,6 @@ $ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 ```
 $ sudo nano /etc/nginx/sites-available/example.com
 $ sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
-$ sudo  systemctl restart ngix.service 
+$ sudo  systemctl restart nginx.service 
 
 ```
