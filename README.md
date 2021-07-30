@@ -67,7 +67,7 @@ $ ssh -i shiny-ec2-key.pem ubuntu@<ip>
 $ mv /home/ubuntu/<shiny-app-folder> /srv/shiny-server
 # install all the packages for your application
 $ sudo su - \
--c "R -e \"install.packages("shiny", repos='https://cran.rstudio.com/')\""
+-c "R -e \"install.packages(c("shiny", "devtools"), repos='https://cran.rstudio.com/')\""
 $ sudo chown -R shiny /srv/shiny-server/<shiny-app-folder>
 $ sudo  systemctl restart shiny-server.service
 ```
