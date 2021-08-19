@@ -25,25 +25,9 @@ data "aws_subnet_ids" "current" {
 }
 
 
-
-module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
-
-  name = "vpc"
-  cidr = "10.0.0.0/16"
-
-  azs             = slice(data.aws_availability_zones.azs.names, 0, 1)
-  private_subnets = ["10.0.0.0/24"]
-  public_subnets  = ["10.0.8.0/24"]
-
-  enable_nat_gateway = true
-
-  tags = local.tags
-}
-
 resource "aws_instance" "shiny_app" {
-  ami                    = "ami-01435035d2ff99756"
-  subnet_id              = module.vpc.public_subnets[0]
+  ami                    = "ami-0103fd088086cb244"
+  subnet_id              = local.subnets_ids[0]
   instance_type          = "t3.medium"
   key_name               = aws_key_pair.this.key_name
   vpc_security_group_ids = [aws_security_group.ec2.id]
