@@ -3,5 +3,5 @@ output "Shiny_app_url" {
 }
 
 output "rds_endpont" {
-  value = aws_db_instance.shiny-db.address
+  value = module.rds.rds_endpont
 }

@@ -17,9 +17,3 @@ variable "region" {
   type    = string
   default = "eu-central-1"
 }
-
-
-variable "db_password" {
-    type = string
-    description = "Password for the master DB user"
-}
