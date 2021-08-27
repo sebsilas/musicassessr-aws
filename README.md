@@ -83,7 +83,7 @@ $ sudo  systemctl restart shiny-server.service
  module "rds" {
   source      = "./modules/rds"
   username    = "postgres"
-  db_name     = "yourDbname"
+  db_name     = "yourDbName"
   db_password = "yourDbPassword"
 }
 
@@ -96,4 +96,4 @@ $ sudo  systemctl restart shiny-server.service
 | <a name="input_username"></a> [username](#input\_username) | Username for the master DB user. | `string` | n/a | yes |
 
 
-NB: db_password should not contain any special characters
+NB: db_password should not contain any special characters.
