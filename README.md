@@ -75,4 +75,25 @@ $ sudo  systemctl restart shiny-server.service
 [Installation Guide](https://github.com/mcetn/shiny-app-aws/blob/main/ssl.md)
 
 
+## 4) Creating a database with RDS (Optional)
 
+ Add the flowing block in [main.tf](https://github.com/mcetn/musicassessr-aws/blob/main/main.tf)
+ 
+ ```
+ module "rds" {
+  source      = "./modules/rds"
+  username    = "postgres"
+  db_name     = "yourDbname"
+  db_password = "yourDbPassword"
+}
+
+ ```
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_db_name"></a> [db\_name](#input\_db\_name) | The name of the database | `string` | n/a | yes |
+| <a name="input_db_password"></a> [db\_password](#input\_db\_password) | Password for the master DB user | `string` | n/a | yes |
+| <a name="input_username"></a> [username](#input\_username) | Username for the master DB user. | `string` | n/a | yes |
+
+
+NB: db_password should not contain any special characters
