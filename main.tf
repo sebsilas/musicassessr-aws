@@ -26,7 +26,7 @@ data "aws_subnet_ids" "current" {
 
 
 resource "aws_instance" "shiny_app" {
-  ami                    = "ami-0103fd088086cb244"
+  ami                    = "ami-0dc2356e3020ea86a"
   subnet_id              = local.subnets_ids[0]
   instance_type          = "t3.medium"
   key_name               = aws_key_pair.this.key_name
