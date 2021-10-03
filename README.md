@@ -70,6 +70,7 @@ $ mv /home/ubuntu/<shiny-app-folder> /srv/shiny-server
 $ sudo su - \
 -c "R -e \"install.packages(c("shiny", "devtools"), repos='https://cran.rstudio.com/')\""
 $ sudo chown -R shiny /srv/shiny-server/<shiny-app-folder>
+$ pm2  start /srv/shiny-server/files-upload/app.js
 $ sudo  systemctl restart shiny-server.service
 ```
 ## 3) Setting up SSL 
