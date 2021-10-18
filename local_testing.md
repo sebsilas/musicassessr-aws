@@ -8,5 +8,11 @@ If you would like to test the functionality locally, follow the following steps:
 $ npm install
 $ npm start
 ```
-5. in /inst/static-website-s3/app.js, change this xhr.open("POST","/api/store_audio",true);
- to 	xhr.open("POST","http://localhost:3000/api/store_audio",true);
+5. in /inst/static-website-s3/app.js, change:
+```
+xhr.open("POST","/api/store_audio",true);
+```
+to
+```
+xhr.open("POST","http://localhost:3000/api/store_audio",true);
+```
