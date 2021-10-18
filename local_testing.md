@@ -1,3 +1,5 @@
+# Local testing
+
 If you would like to test the functionality locally, follow the following steps:
 
 1. Install node js via https://nodejs.org/en/ (choose the LTS version)
