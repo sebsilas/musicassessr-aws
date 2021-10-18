@@ -76,8 +76,12 @@ $ sudo  systemctl restart shiny-server.service
 ## 3) Setting up SSL 
 [Installation Guide](https://github.com/mcetn/shiny-app-aws/blob/main/ssl.md)
 
+## 4) Local testing (optional)
 
-## 4) Creating a database with RDS (Optional)
+See: https://github.com/mcetn/musicassessr-aws/blob/main/local_testing.md
+
+
+## 5) Creating a database with RDS (optional)
 
  Add the flowing block in [main.tf](https://github.com/mcetn/musicassessr-aws/blob/main/main.tf)
  
