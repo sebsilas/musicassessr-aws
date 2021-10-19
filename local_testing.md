@@ -8,7 +8,7 @@ If you would like to test the functionality locally, follow the following steps:
 4. 
 ```
 $ npm install
-$ npm start
+$ node app.js
 ```
 5. in /inst/static-website-s3/app.js, change:
 ```
