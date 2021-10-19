@@ -4,7 +4,7 @@ If you would like to test the functionality locally, follow the following steps:
 
 1. Install node js via https://nodejs.org/en/ (choose the LTS version)
 2. Extract local_testing.zip: https://github.com/mcetn/musicassessr-aws/blob/main/local_testing.zip
-3. cd to the files-upload  
+3. cd to the local_testing directory
 4. 
 ```
 $ npm install
