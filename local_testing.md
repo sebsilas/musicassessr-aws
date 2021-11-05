@@ -22,5 +22,5 @@ xhr.open("POST","/api/store_audio",true);
 ```
 to
 ```
-xhr.open("POST","http://localhost:3000/api/store_audio",true);
+xhr.open("POST","http://localhost:3000/upload-audio",true);
 ```
