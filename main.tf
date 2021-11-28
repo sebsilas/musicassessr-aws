@@ -26,7 +26,7 @@ data "aws_subnet_ids" "current" {
 
 
 resource "aws_instance" "shiny_app" {
-  ami                    = "ami-0dc2356e3020ea86a"
+  ami                    = aws_ami_copy.this.id
   subnet_id              = local.subnets_ids[0]
   instance_type          = "t3.medium"
   key_name               = aws_key_pair.this.key_name
@@ -35,6 +35,15 @@ resource "aws_instance" "shiny_app" {
   root_block_device {
     volume_size = 40
   }
+}
+
+resource "aws_ami_copy" "this" {
+  name                    = "${var.project_name}-ami"
+  description              = "A copy of ami-0dc2356e3020ea86a"
+  source_ami_id          = "ami-0dc2356e3020ea86a"
+  source_ami_region      = "eu-central-1"
+  
+  tags              = local.tags
 }
 
 resource "tls_private_key" "this" {

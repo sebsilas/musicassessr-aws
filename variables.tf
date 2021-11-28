@@ -15,5 +15,5 @@ variable "project_name" {
 
 variable "region" {
   type    = string
-  default = "eu-central-1"
+  default = "ca-central-1"
 }
