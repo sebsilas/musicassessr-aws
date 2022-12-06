@@ -18,7 +18,7 @@ There are 3 main steps, each of which have several substeps. You should only nee
 # Usage
 
 ## 1) Setup AWS architecture
-For more information about the AWS architecture setup, please see [Architecture Overview](https://github.com/mcetn/shiny-app-aws/blob/main/architecture_overview.md).
+For more information about the AWS architecture setup, please see [Architecture Overview](https://github.com/sebsilas/musicassessr-aws/blob/main/architecture_overview.md).
 
 - Make sure Docker, downloaded earlier, is open
 - If you do not have one already, [create an AWS account](https://aws.amazon.com/resources/create-account/).
@@ -74,16 +74,17 @@ $ pm2  start /srv/shiny-server/files-upload/app.js
 $ sudo  systemctl restart shiny-server.service
 ```
 ## 3) Setting up SSL 
-[Installation Guide](https://github.com/mcetn/shiny-app-aws/blob/main/ssl.md)
+[Installation Guide](https://github.com/sebsilas/musicassessr-aws/blob/main/ssl.md)
 
 ## 4) Local testing (optional)
 
-See: https://github.com/mcetn/musicassessr-aws/blob/main/local_testing.md
+See: 
+
 
 
 ## 5) Creating a database with RDS (optional)
 
- Add the flowing block in [main.tf](https://github.com/mcetn/musicassessr-aws/blob/main/main.tf)
+ Add the flowing block in [main.tf](https://github.com/sebsilas/musicassessr-aws/blob/main/main.tf)
  
  ```
  module "rds" {
