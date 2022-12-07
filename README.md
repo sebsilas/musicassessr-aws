@@ -78,7 +78,7 @@ $ sudo  systemctl restart shiny-server.service
 
 ## 4) Local testing (optional)
 
-See: 
+See: https://github.com/sebsilas/musicassessr-aws/blob/main/local_testing.md
 
 
 
