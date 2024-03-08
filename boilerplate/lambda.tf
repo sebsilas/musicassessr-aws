@@ -36,3 +36,24 @@ resource "aws_lambda_function" "sonic_pyin" {
 
   tags = local.tags
 }
+
+
+resource "aws_lambda_function" "sonic_pyin_v2" {
+  depends_on = [
+    null_resource.lambda_ecr_image
+  ]
+  function_name = "${var.project_name}-sonic-pyin-v2"
+  role          = aws_iam_role.lambda.arn
+  timeout       = 300
+  image_uri     = "${aws_ecr_repository.sonic_pyin.repository_url}@${data.aws_ecr_image.lambda_image.id}"
+  package_type  = "Image"
+
+  environment {
+
+    variables = {
+      S3_DESTINATION_BUCKET = local.s3_destination_bucket_name
+    }
+  }
+
+  tags = local.tags
+}

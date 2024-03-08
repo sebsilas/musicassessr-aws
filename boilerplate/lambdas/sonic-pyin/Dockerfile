@@ -6,5 +6,3 @@ RUN yum -y install qt5-qtbase
 RUN yum -y install qt5-qtbase-common
 ENV VAMP_PATH $pwd"vamp"
 CMD ["app.handler"]
-
-
